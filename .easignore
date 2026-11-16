@@ -1,0 +1,47 @@
+# dependencies
+node_modules/
+
+# Expo
+.expo/
+dist/
+web-build/
+expo-env.d.ts
+
+# Native signing keys
+*.jks
+*.p8
+*.p12
+*.key
+*.mobileprovision
+*.pem
+
+# Metro
+.metro-health-check*
+
+# debug logs
+npm-debug.*
+yarn-debug.*
+yarn-error.*
+
+# macOS
+.DS_Store
+
+# env files
+.env
+.env*.local
+
+# TypeScript
+*.tsbuildinfo
+
+# tests
+coverage/
+
+# Kotlin
+.kotlin/
+
+# Local Android build caches. These contain this PC's folder paths and break the Linux build.
+android/.gradle/
+android/build/
+android/app/build/
+android/app/.cxx/
+android/local.properties
