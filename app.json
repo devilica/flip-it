@@ -1,0 +1,50 @@
+{
+  "expo": {
+    "name": "FLIP IT!",
+    "slug": "flip-it",
+    "scheme": "flipit",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "icon": "./src/assets/images/icon.png",
+    "userInterfaceStyle": "automatic",
+    "backgroundColor": "#101426",
+    "android": {
+      "package": "com.flipit.puzzle",
+      "versionCode": 1,
+      "predictiveBackGestureEnabled": false,
+      "adaptiveIcon": {
+        "foregroundImage": "./src/assets/images/adaptive-icon.png",
+        "backgroundColor": "#101426"
+      }
+    },
+    "plugins": [
+      "expo-router",
+      "expo-font",
+      "expo-audio",
+      [
+        "expo-splash-screen",
+        {
+          "image": "./src/assets/images/splash-icon.png",
+          "backgroundColor": "#101426",
+          "imageWidth": 140
+        }
+      ],
+      "expo-asset",
+      [
+        "react-native-google-mobile-ads",
+        {
+          "androidAppId": "ca-app-pub-5452343649745884~2499535121",
+          "delayAppMeasurementInit": true
+        }
+      ]
+    ],
+    "experiments": {
+      "typedRoutes": false
+    },
+    "extra": {
+      "eas": {
+        "projectId": "4fac606b-e2c8-4a4c-bec7-578a533d7668"
+      }
+    }
+  }
+}
