@@ -40,35 +40,42 @@ export function IconButton({
 
   return (
     <View style={[styles.wrapper, style]}>
-      <Animated.View style={[animatedStyle, disabled && styles.disabled]}>
+      <Animated.View style={animatedStyle}>
+        {/* Disabled is handled here instead of on Pressable: Android greys out a disabled native view. */}
         <Pressable
           accessibilityRole="button"
-          accessibilityLabel={accessibilityLabel}
-          accessibilityState={{ disabled: !!disabled }}
-          disabled={disabled}
+          accessibilityLabel={disabled ? `${accessibilityLabel}, unavailable` : accessibilityLabel}
           hitSlop={6}
           onPressIn={() => {
+            if (disabled) return;
             scale.value = withSpring(0.88, { damping: 15, stiffness: 420 });
           }}
           onPressOut={() => {
+            if (disabled) return;
             scale.value = withSpring(1, { damping: 12, stiffness: 300 });
           }}
           onPress={() => {
+            if (disabled) return;
             if (!silent) feedback('button', 'selection');
             onPress();
           }}
           style={[
             styles.button,
-            soft ? null : styles.shadow,
+            soft || disabled ? null : styles.shadow,
             {
               width: size,
               height: size,
               borderRadius: soft ? size / 2 : size * 0.36,
-              backgroundColor: soft ? theme.surface : theme.surfaceStrong,
+              backgroundColor: disabled ? 'transparent' : soft ? theme.surface : theme.surfaceStrong,
             },
           ]}
         >
-          <Ionicons name={icon} size={size * 0.46} color={theme.text} />
+          <Ionicons
+            name={icon}
+            size={size * 0.46}
+            color={disabled ? theme.textMuted : theme.text}
+            style={styles.icon}
+          />
         </Pressable>
         {badge !== undefined ? (
           <View style={styles.badge}>
@@ -100,6 +107,7 @@ const styles = StyleSheet.create({
     shadowOffset: { width: 0, height: 4 },
     elevation: 3,
   },
+  icon: { backgroundColor: 'transparent' },
   badge: {
     position: 'absolute',
     top: -4,
@@ -113,5 +121,4 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   label: { marginTop: 6 },
-  disabled: { opacity: 0.4 },
 });

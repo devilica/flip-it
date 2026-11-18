@@ -10,7 +10,7 @@
     "backgroundColor": "#101426",
     "android": {
       "package": "com.flipit.puzzle",
-      "versionCode": 1,
+      "versionCode": 3,
       "predictiveBackGestureEnabled": false,
       "adaptiveIcon": {
         "foregroundImage": "./src/assets/images/adaptive-icon.png",

@@ -1,7 +1,7 @@
 import Ionicons from '@expo/vector-icons/Ionicons';
 import { useRouter } from 'expo-router';
 import { useMemo } from 'react';
-import { StyleSheet, useWindowDimensions, View } from 'react-native';
+import { Pressable, StyleSheet, useWindowDimensions, View } from 'react-native';
 import Animated, { FadeInUp } from 'react-native-reanimated';
 
 import { LogoMark } from '@/components/home/LogoMark';
@@ -14,6 +14,7 @@ import { Screen } from '@/components/ui/Screen';
 import { StarRow } from '@/components/ui/StarRow';
 import { toDateKey, TOTAL_LEVELS } from '@/game/levels';
 import { useTheme } from '@/hooks/useTheme';
+import { useI18n } from '@/i18n';
 import { completedCount, totalStars } from '@/store/progressModel';
 import { useProgressStore } from '@/store/progressStore';
 import { radius, spacing } from '@/theme';
@@ -21,11 +22,11 @@ import { radius, spacing } from '@/theme';
 export function HomeScreen() {
   const router = useRouter();
   const theme = useTheme();
+  const { t } = useI18n();
   const { height } = useWindowDimensions();
 
   const unlockedLevel = useProgressStore((state) => state.unlockedLevel);
   const stars = useProgressStore((state) => state.stars);
-  const session = useProgressStore((state) => state.session);
   const daily = useProgressStore((state) => state.daily);
   const tutorialSeen = useProgressStore((state) => state.tutorialSeen);
   const markTutorialSeen = useProgressStore((state) => state.markTutorialSeen);
@@ -41,42 +42,37 @@ export function HomeScreen() {
     <Screen overlay={tutorialSeen ? undefined : <FlipTutorial onDone={markTutorialSeen} />}>
       <View style={styles.body}>
         <View style={styles.topRow}>
-          <View style={[styles.topColumn, styles.topColumnStart]}>
-            <View style={[styles.chip, { backgroundColor: theme.surface }]}>
+          <IconButton icon="chevron-back" accessibilityLabel={t('allGames')} onPress={() => router.dismissTo('/')} size={40} soft />
+          <View style={styles.topCenter}>
+            <Pressable
+              accessibilityRole="button"
+              accessibilityLabel={t('levels')}
+              onPress={() => router.push('/levels')}
+              style={[styles.chip, { backgroundColor: theme.surface }]}
+            >
               <Ionicons name="star" size={16} color={theme.star} />
               <AppText size={15} weight="semibold">
                 {starTotal}
               </AppText>
-            </View>
-            <IconButton
-              icon="grid"
-              accessibilityLabel="Levels"
-              size={40}
-              soft
-              onPress={() => router.push('/levels')}
-            />
-          </View>
-          <View style={[styles.topColumn, styles.topColumnEnd]}>
-            <View style={[styles.chip, { backgroundColor: theme.surface }]}>
               <Ionicons name="trophy" size={15} color={theme.textMuted} />
               <AppText size={15} weight="semibold">
                 {completed}/{TOTAL_LEVELS}
               </AppText>
-            </View>
-            <IconButton
-              icon="settings-sharp"
-              accessibilityLabel="Settings"
-              size={40}
-              soft
-              onPress={() => router.push('/settings')}
-            />
+            </Pressable>
           </View>
+          <IconButton
+            icon="settings-sharp"
+            accessibilityLabel={t('settings')}
+            size={40}
+            soft
+            onPress={() => router.push('/settings')}
+          />
         </View>
 
         <View style={[styles.hero, compact && styles.heroCompact]}>
           <LogoMark boardSize={compact ? 96 : 124} />
           <AppText size={16} tone="muted" align="center">
-            Tap to flip. Make every tile match.
+            {t('flipTagline')}
           </AppText>
         </View>
 
@@ -84,39 +80,30 @@ export function HomeScreen() {
           <View style={[styles.progressCard, { backgroundColor: theme.surface }]}>
             <View style={styles.progressHeader}>
               <AppText size={13} weight="semibold" tone="subtle">
-                CURRENT LEVEL
+                {t('currentLevel').toLocaleUpperCase()}
               </AppText>
               <AppText size={13} weight="semibold" tone="muted">
-                {Math.round((completed / TOTAL_LEVELS) * 100)}% complete
+                {t('percentComplete', { n: Math.round((completed / TOTAL_LEVELS) * 100) })}
               </AppText>
             </View>
             <AppText size={28} weight="bold">
-              Level {playLevel}
+              {t('levelN', { n: playLevel })}
             </AppText>
             <ProgressBar value={completed / TOTAL_LEVELS} height={8} />
           </View>
 
           <GameButton
-            label="Play"
-            caption={`Level ${playLevel}`}
+            label={t('play')}
+            caption={t('levelN', { n: playLevel })}
+            captionPosition="beside"
             icon="play"
             size="lg"
             onPress={() => router.push(`/play/${playLevel}`)}
           />
 
-          {session ? (
-            <GameButton
-              label="Continue"
-              caption={`Level ${session.levelNumber} · ${session.history.length} moves in`}
-              icon="play-forward"
-              variant="secondary"
-              onPress={() => router.push({ pathname: '/play/[level]', params: { level: String(session.levelNumber), resume: '1' } })}
-            />
-          ) : null}
-
           <GameButton
-            label="Daily Challenge"
-            caption={todaysDaily ? 'Completed today' : 'A fresh puzzle every day'}
+            label={t('dailyChallenge')}
+            caption={todaysDaily ? t('dailyDone') : t('dailyFresh')}
             icon="calendar"
             variant="secondary"
             onPress={() => router.push('/daily')}
@@ -130,10 +117,8 @@ export function HomeScreen() {
 
 const styles = StyleSheet.create({
   body: { flex: 1, justifyContent: 'space-between' },
-  topRow: { flexDirection: 'row', justifyContent: 'space-between' },
-  topColumn: { gap: spacing.xs },
-  topColumnStart: { alignItems: 'flex-start' },
-  topColumnEnd: { alignItems: 'flex-end' },
+  topRow: { flexDirection: 'row', alignItems: 'center' },
+  topCenter: { flex: 1, alignItems: 'center' },
   chip: {
     flexDirection: 'row',
     alignItems: 'center',

@@ -7,9 +7,8 @@ import { GameButton } from '@/components/ui/GameButton';
 import { OverlayPanel } from '@/components/ui/OverlayPanel';
 import { StarRow } from '@/components/ui/StarRow';
 import { useTheme } from '@/hooks/useTheme';
+import { useI18n } from '@/i18n';
 import { radius, spacing } from '@/theme';
-
-const headlines = ['Solved!', 'Solved!', 'Great job!', 'Perfect!'];
 
 interface VictoryOverlayProps {
   stars: number;
@@ -48,6 +47,8 @@ export function VictoryOverlay({
   onHome,
 }: VictoryOverlayProps) {
   const theme = useTheme();
+  const { t } = useI18n();
+  const headlines = [t('solvedBang'), t('solvedBang'), t('greatJob'), t('perfect')];
   return (
     <OverlayPanel backdropContent={<Confetti />}>
       <View style={styles.starsWrap}>
@@ -58,16 +59,16 @@ export function VictoryOverlay({
           {headlines[stars]}
         </AppText>
         <AppText size={15} tone="muted" align="center">
-          {stars === 3 ? 'Solved in the fewest possible moves.' : `Solve it in ${par} moves for 3 stars.`}
+          {stars === 3 ? t('solvedFewest') : t('solveForStars', { n: par })}
         </AppText>
       </Animated.View>
       <View style={[styles.stats, { backgroundColor: theme.surface }]}>
-        <Stat label="MOVES" value={String(movesUsed)} />
-        <Stat label="POSSIBLE" value={String(par)} />
-        <Stat label="BEST" value={bestMoves === null ? '-' : String(bestMoves)} />
+        <Stat label={t('moves').toLocaleUpperCase()} value={String(movesUsed)} />
+        <Stat label={t('possible').toLocaleUpperCase()} value={String(par)} />
+        <Stat label={t('best').toLocaleUpperCase()} value={bestMoves === null ? '-' : String(bestMoves)} />
       </View>
       <GameButton
-        label={continueDisabled ? 'Loading ad...' : continueLabel}
+        label={continueDisabled ? t('loadingAd') : continueLabel}
         icon="arrow-forward"
         size="lg"
         onPress={onContinue}
@@ -75,8 +76,8 @@ export function VictoryOverlay({
         style={styles.full}
       />
       <View style={styles.row}>
-        <GameButton label="Replay" icon="refresh" variant="secondary" size="sm" onPress={onReplay} style={styles.half} />
-        <GameButton label="Home" icon="home" variant="secondary" size="sm" onPress={onHome} style={styles.half} />
+        <GameButton label={t('replay')} icon="refresh" variant="secondary" size="sm" onPress={onReplay} style={styles.half} />
+        <GameButton label={t('home')} icon="home" variant="secondary" size="sm" onPress={onHome} style={styles.half} />
       </View>
     </OverlayPanel>
   );

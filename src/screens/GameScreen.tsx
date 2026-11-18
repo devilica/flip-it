@@ -16,13 +16,15 @@ import { GameControls } from '@/components/game/GameControls';
 import { GameHud } from '@/components/game/GameHud';
 import { PauseOverlay } from '@/components/game/PauseOverlay';
 import { VictoryOverlay } from '@/components/game/VictoryOverlay';
+import { FlipTutorial } from '@/components/tutorial/FlipTutorial';
 import { Screen } from '@/components/ui/Screen';
 import { UNLOCK_ALL_LEVELS } from '@/config/dev';
-import { uniformity } from '@/game/engine';
+import { minimumMoves, uniformity } from '@/game/engine';
 import { getDailyLevel, getLevel, isLevelReady, toDateKey, TOTAL_LEVELS } from '@/game/levels';
 import type { LevelDef } from '@/game/types';
 import { useSquareLayout } from '@/hooks/useSquareLayout';
 import { useTheme } from '@/hooks/useTheme';
+import { useI18n } from '@/i18n';
 import { showLevelInterstitial } from '@/services/ads';
 import { feedback } from '@/services/feedback';
 import { selectMoveLimit, selectMovesUsed, useGameStore, type GameMode } from '@/store/gameStore';
@@ -44,6 +46,7 @@ function loadLevel(mode: GameMode, levelNumber: number, dateKey: string): LevelD
 export function GameScreen({ mode, levelNumber = 1, resume = false }: GameScreenProps) {
   const router = useRouter();
   const theme = useTheme();
+  const { t } = useI18n();
   const dateKey = useMemo(() => toDateKey(new Date()), []);
 
   const unlockedLevel = useProgressStore((state) => state.unlockedLevel);
@@ -71,7 +74,13 @@ export function GameScreen({ mode, levelNumber = 1, resume = false }: GameScreen
   const [ready, setReady] = useState(false);
   const [continuing, setContinuing] = useState(false);
   const [hintOffer, setHintOffer] = useState(false);
+  const [rulesOpen, setRulesOpen] = useState(false);
   const { size: boardSize, onLayout } = useSquareLayout();
+  const nowMoves = useMemo(() => {
+    if (!board) return null;
+    const count = minimumMoves(board);
+    return Number.isFinite(count) ? count : null;
+  }, [board]);
 
   // Load (and generate if needed) the level, deferring a frame so a spinner can show.
   useEffect(() => {
@@ -139,14 +148,18 @@ export function GameScreen({ mode, levelNumber = 1, resume = false }: GameScreen
 
   const shakeStyle = useAnimatedStyle(() => ({ transform: [{ translateX: shake.value }] }));
 
-  const goHome = useCallback(() => router.dismissTo('/'), [router]);
-  const goLevels = useCallback(() => router.replace('/levels'), [router]);
+  const goHome = useCallback(() => router.dismissTo('/flip'), [router]);
+  const goLevels = useCallback(() => router.dismissTo('/levels'), [router]);
 
   // Android back: pause first, then resume, otherwise leave normally.
   useEffect(() => {
     const subscription = BackHandler.addEventListener('hardwareBackPress', () => {
       if (hintOffer) {
         setHintOffer(false);
+        return true;
+      }
+      if (rulesOpen) {
+        setRulesOpen(false);
         return true;
       }
       const current = useGameStore.getState().status;
@@ -161,7 +174,7 @@ export function GameScreen({ mode, levelNumber = 1, resume = false }: GameScreen
       return false;
     });
     return () => subscription.remove();
-  }, [hintOffer]);
+  }, [hintOffer, rulesOpen]);
 
   const onTapCell = useCallback(
     (index: number) => {
@@ -200,7 +213,7 @@ export function GameScreen({ mode, levelNumber = 1, resume = false }: GameScreen
     router.replace(`/play/${level.number + 1}`);
   }, [continuing, goHome, level, mode, router]);
 
-  const title = mode === 'daily' ? 'Daily' : `Level ${safeLevel}`;
+  const title = mode === 'daily' ? t('daily') : t('levelN', { n: safeLevel });
   const progress = board ? uniformity(board) : 0;
 
   let overlay = null;
@@ -223,7 +236,7 @@ export function GameScreen({ mode, levelNumber = 1, resume = false }: GameScreen
         movesUsed={movesUsed}
         par={level.par}
         bestMoves={bestMoves}
-        continueLabel={mode === 'daily' || level.number >= TOTAL_LEVELS ? 'Done' : 'Next level'}
+        continueLabel={mode === 'daily' || level.number >= TOTAL_LEVELS ? t('done') : t('nextLevel')}
         continueDisabled={continuing}
         onContinue={onContinue}
         onReplay={onRestart}
@@ -242,6 +255,8 @@ export function GameScreen({ mode, levelNumber = 1, resume = false }: GameScreen
         onClose={() => setHintOffer(false)}
       />
     );
+  } else if (ready && level && status === 'playing' && rulesOpen) {
+    overlay = <FlipTutorial onDone={() => setRulesOpen(false)} />;
   } else if (ready && level && status === 'failed') {
     overlay = (
       <FailOverlay
@@ -269,7 +284,9 @@ export function GameScreen({ mode, levelNumber = 1, resume = false }: GameScreen
             movesUsed={movesUsed}
             moveLimit={moveLimit}
             boardProgress={progress}
+            nowMoves={nowMoves}
             onPause={actions.pause}
+            onHelp={() => setRulesOpen(true)}
           />
           <View style={styles.boardArea} onLayout={onLayout}>
             {boardSize > 0 ? (

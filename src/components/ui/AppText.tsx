@@ -1,7 +1,17 @@
-import { StyleSheet, Text, type TextProps } from 'react-native';
+import { StyleSheet, type TextProps } from 'react-native';
+import Animated, { interpolateColor, useAnimatedStyle } from 'react-native-reanimated';
 
-import { useTheme } from '@/hooks/useTheme';
-import { fonts, type FontWeightName } from '@/theme';
+import { isLanguage, SYSTEM_FONT_LANGUAGES } from '@/i18n/languages';
+import { useProgressStore } from '@/store/progressStore';
+import { darkTheme, fonts, lightTheme, type FontWeightName } from '@/theme';
+import { themeProgress } from '@/theme/blend';
+
+const systemWeight: Record<FontWeightName, '400' | '500' | '600' | '700'> = {
+  regular: '400',
+  medium: '500',
+  semibold: '600',
+  bold: '700',
+};
 
 type Tone = 'default' | 'muted' | 'subtle' | 'inverse';
 
@@ -22,23 +32,34 @@ export function AppText({
   style,
   ...rest
 }: AppTextProps) {
-  const theme = useTheme();
-  const toneColor =
-    tone === 'muted'
-      ? theme.textMuted
-      : tone === 'subtle'
-        ? theme.textSubtle
-        : tone === 'inverse'
-          ? '#FFFFFF'
-          : theme.text;
+  const language = useProgressStore((state) => state.settings.language);
+  const systemFont = isLanguage(language) && SYSTEM_FONT_LANGUAGES.has(language);
+  const toneStyle = useAnimatedStyle(() => {
+    if (color) return {};
+    const pair =
+      tone === 'muted'
+        ? [darkTheme.textMuted, lightTheme.textMuted]
+        : tone === 'subtle'
+          ? [darkTheme.textSubtle, lightTheme.textSubtle]
+          : tone === 'inverse'
+            ? ['#FFFFFF', '#FFFFFF']
+            : [darkTheme.text, lightTheme.text];
+    return { color: interpolateColor(themeProgress.value, [0, 1], pair) };
+  }, [color, tone]);
   return (
-    <Text
+    <Animated.Text
       allowFontScaling={false}
       {...rest}
       style={[
         styles.base,
-        { fontSize: size, lineHeight: Math.round(size * 1.25), fontFamily: fonts[weight] },
-        { color: color ?? toneColor, textAlign: align },
+        {
+          fontSize: size,
+          lineHeight: Math.round(size * 1.25),
+          fontFamily: systemFont ? undefined : fonts[weight],
+          fontWeight: systemFont ? systemWeight[weight] : undefined,
+        },
+        toneStyle,
+        color ? { color, textAlign: align } : { textAlign: align },
         style,
       ]}
     />

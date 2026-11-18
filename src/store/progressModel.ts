@@ -1,3 +1,5 @@
+import { isLanguage } from '@/i18n/languages';
+
 export const CURRENT_SAVE_VERSION = 1;
 
 export type ThemeName = 'dark' | 'light';
@@ -7,6 +9,8 @@ export interface Settings {
   music: boolean;
   haptics: boolean;
   theme: ThemeName;
+  /** One of the supported language codes. English when an old save has none. */
+  language: string;
 }
 
 /** An unfinished regular level, so the player can continue where they left off. */
@@ -44,6 +48,7 @@ export const DEFAULT_SETTINGS: Settings = {
   music: true,
   haptics: true,
   theme: 'dark',
+  language: 'en',
 };
 
 export function createDefaultProgress(): ProgressData {
@@ -119,6 +124,7 @@ export function migrateProgress(persisted: unknown, fromVersion: number): Progre
       music: typeof settings.music === 'boolean' ? settings.music : DEFAULT_SETTINGS.music,
       haptics: typeof settings.haptics === 'boolean' ? settings.haptics : DEFAULT_SETTINGS.haptics,
       theme: settings.theme === 'light' ? 'light' : 'dark',
+      language: isLanguage(settings.language) ? settings.language : DEFAULT_SETTINGS.language,
     },
     session: sanitizeSession(persisted.session),
     tutorialSeen: persisted.tutorialSeen === true,

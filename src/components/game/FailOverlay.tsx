@@ -13,6 +13,7 @@ import Animated, {
 import { AppText } from '@/components/ui/AppText';
 import { GameButton } from '@/components/ui/GameButton';
 import { OverlayPanel } from '@/components/ui/OverlayPanel';
+import { useI18n } from '@/i18n';
 import { rewardedAds } from '@/services/ads';
 import { BONUS_MOVES } from '@/store/gameStore';
 import { palette, spacing } from '@/theme';
@@ -52,6 +53,7 @@ function SadTile() {
 }
 
 export function FailOverlay({ canUseBonus, onRetry, onBonus, onHome }: FailOverlayProps) {
+  const { t } = useI18n();
   const [loadingAd, setLoadingAd] = useState(false);
   const [adError, setAdError] = useState(false);
   const mounted = useRef(true);
@@ -76,16 +78,16 @@ export function FailOverlay({ canUseBonus, onRetry, onBonus, onHome }: FailOverl
     <OverlayPanel>
       <SadTile />
       <AppText size={30} weight="bold" align="center">
-        Out of moves
+        {t('outOfMoves')}
       </AppText>
       <AppText size={15} tone="muted" align="center">
-        So close! Every puzzle has a solution. Try a fresh approach.
+        {t('soClose')}
       </AppText>
-      <GameButton label="Try again" icon="refresh" size="lg" onPress={onRetry} style={styles.full} />
+      <GameButton label={t('tryAgain')} icon="refresh" size="lg" onPress={onRetry} style={styles.full} />
       {canUseBonus && rewardedAds.isAvailable() ? (
         <GameButton
-          label={loadingAd ? 'Loading ad...' : `+${BONUS_MOVES} moves`}
-          caption={loadingAd ? 'The video opens when it is ready' : 'Watch a short ad'}
+          label={loadingAd ? t('loadingAd') : t('bonusMoves', { n: BONUS_MOVES })}
+          caption={loadingAd ? t('videoReady') : t('watchShortAd')}
           icon="play-circle"
           variant="secondary"
           onPress={watchAd}
@@ -95,10 +97,10 @@ export function FailOverlay({ canUseBonus, onRetry, onBonus, onHome }: FailOverl
       ) : null}
       {adError ? (
         <AppText size={13} tone="muted" align="center">
-          Ad didn't finish. No extra moves.
+          {t('adNoMoves')}
         </AppText>
       ) : null}
-      <GameButton label="Home" icon="home" variant="ghost" size="sm" onPress={onHome} style={styles.full} />
+      <GameButton label={t('home')} icon="home" variant="ghost" size="sm" onPress={onHome} style={styles.full} />
     </OverlayPanel>
   );
 }

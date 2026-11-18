@@ -7,6 +7,7 @@ import { StarRow } from '@/components/ui/StarRow';
 import { starsForMoves } from '@/game/engine';
 import type { Difficulty, LevelDef } from '@/game/types';
 import { useTheme } from '@/hooks/useTheme';
+import { useI18n, type MessageKey } from '@/i18n';
 import { palette, radius, spacing } from '@/theme';
 
 const difficultyColor: Record<Difficulty, string> = {
@@ -24,11 +25,15 @@ interface GameHudProps {
   moveLimit: number;
   /** 0..1 share of tiles in the dominant color. */
   boardProgress: number;
+  /** Minimum moves from the board after the player has tapped. Hidden before the first tap. */
+  nowMoves: number | null;
   onPause: () => void;
+  onHelp: () => void;
 }
 
-export function GameHud({ title, level, movesUsed, moveLimit, boardProgress, onPause }: GameHudProps) {
+export function GameHud({ title, level, movesUsed, moveLimit, boardProgress, nowMoves, onPause, onHelp }: GameHudProps) {
   const theme = useTheme();
+  const { t } = useI18n();
   const remaining = Math.max(0, moveLimit - movesUsed);
   const low = remaining <= 2;
   // Stars the player can still earn if they solve the board with the next move.
@@ -37,7 +42,7 @@ export function GameHud({ title, level, movesUsed, moveLimit, boardProgress, onP
   return (
     <View style={styles.root}>
       <View style={styles.topRow}>
-        <IconButton icon="pause" accessibilityLabel="Pause" onPress={onPause} size={48} />
+        <IconButton icon="pause" accessibilityLabel={t('pause')} onPress={onPause} size={48} />
         <View style={styles.titleBlock}>
           <AppText size={24} weight="bold" align="center">
             {title}
@@ -45,20 +50,22 @@ export function GameHud({ title, level, movesUsed, moveLimit, boardProgress, onP
           <View style={[styles.chip, { backgroundColor: theme.surface }]}>
             <View style={[styles.dot, { backgroundColor: difficultyColor[level.difficulty] }]} />
             <AppText size={12} weight="semibold" tone="muted">
-              {level.difficulty.toUpperCase()} · {level.board.size}×{level.board.size}
-              {level.board.colors === 3 ? ' · 3 COLORS' : ''}
+              {t(level.difficulty as MessageKey).toLocaleUpperCase()} · {level.board.size}×{level.board.size}
+              {level.board.colors === 3 ? ` · ${t('threeColors').toLocaleUpperCase()}` : ''}
             </AppText>
           </View>
-        </View>
-        <View style={styles.starSlot}>
           <StarRow count={potentialStars} size={16} />
+          <AppText size={12} weight="semibold" tone="muted" align="center">
+            {level.par === 1 ? t('levelSolvedOne') : t('levelSolved', { n: level.par })}
+          </AppText>
         </View>
+        <IconButton icon="help-circle" accessibilityLabel={t('howToPlay')} onPress={onHelp} size={48} />
       </View>
 
       <View style={[styles.panel, { backgroundColor: theme.surfaceStrong }]}>
         <View style={styles.stat}>
           <AppText size={12} weight="semibold" tone="subtle">
-            MOVES
+            {t('moves').toLocaleUpperCase()}
           </AppText>
           <View style={styles.movesRow}>
             <AppText size={30} weight="bold" color={low ? palette.coral : theme.text}>
@@ -74,7 +81,7 @@ export function GameHud({ title, level, movesUsed, moveLimit, boardProgress, onP
         <View style={[styles.stat, styles.progressStat]}>
           <View style={styles.progressLabel}>
             <AppText size={12} weight="semibold" tone="subtle">
-              MATCHED
+              {t('matched').toLocaleUpperCase()}
             </AppText>
             <AppText size={12} weight="semibold" tone="muted">
               {Math.round(boardProgress * 100)}%
@@ -82,7 +89,10 @@ export function GameHud({ title, level, movesUsed, moveLimit, boardProgress, onP
           </View>
           <ProgressBar value={boardProgress} height={10} />
           <AppText size={12} weight="medium" tone="subtle">
-            {remaining === 1 ? '1 move left' : `${remaining} moves left`} · Can be solved in {level.par}
+            {remaining === 1 ? t('moveLeft') : t('movesLeft', { n: remaining })}
+          </AppText>
+          <AppText size={12} weight="semibold" tone="muted">
+            {nowMoves === null ? t('nowSolvedUnknown') : nowMoves === 1 ? t('nowSolvedOne') : t('nowSolved', { n: nowMoves })}
           </AppText>
         </View>
       </View>
@@ -103,7 +113,6 @@ const styles = StyleSheet.create({
     borderRadius: radius.pill,
   },
   dot: { width: 8, height: 8, borderRadius: 4 },
-  starSlot: { width: 64, alignItems: 'flex-end' },
   panel: {
     flexDirection: 'row',
     alignItems: 'center',

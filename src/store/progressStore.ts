@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { isLanguage } from '@/i18n/languages';
 import { create } from 'zustand';
 import { createJSONStorage, persist } from 'zustand/middleware';
 
@@ -54,7 +55,11 @@ export const useProgressStore = create<ProgressState>()(
         set({ daily: { ...get().daily, [dateKey]: best } });
       },
 
-      updateSettings: (patch) => set({ settings: { ...get().settings, ...patch } }),
+      updateSettings: (patch) => {
+        const settings = { ...get().settings, ...patch };
+        if (!isLanguage(settings.language)) settings.language = 'en';
+        set({ settings });
+      },
 
       saveSession: (session) => set({ session }),
 

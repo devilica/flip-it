@@ -45,21 +45,21 @@ function DemoBoard({ size }: { size: number }) {
   );
 }
 
-export function LogoMark({ boardSize = 120 }: { boardSize?: number }) {
+export function LogoMark({ boardSize = 120, titleSize = 56 }: { boardSize?: number; titleSize?: number }) {
   return (
     <View style={styles.root}>
       <Animated.View entering={FadeInDown.springify().damping(14)}>
         <DemoBoard size={boardSize} />
       </Animated.View>
       <Animated.View entering={FadeInDown.delay(120).springify().damping(14)} style={styles.titleRow}>
-        <AppText size={56} weight="bold" style={styles.title}>
+        <AppText size={titleSize} weight="bold" style={[styles.title, { lineHeight: titleSize + 6 }]}>
           FLIP
         </AppText>
-        <AppText size={56} weight="bold" color={palette.blue} style={styles.title}>
+        <AppText size={titleSize} weight="bold" color={palette.blue} style={[styles.title, { lineHeight: titleSize + 6 }]}>
           {' '}
           IT
         </AppText>
-        <AppText size={56} weight="bold" color={palette.coral} style={styles.title}>
+        <AppText size={titleSize} weight="bold" color={palette.coral} style={[styles.title, { lineHeight: titleSize + 6 }]}>
           !
         </AppText>
       </Animated.View>

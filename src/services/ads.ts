@@ -1,12 +1,17 @@
-import mobileAds, {
-  AdEventType,
-  AdsConsent,
-  AdsConsentStatus,
-  InterstitialAd,
-  RewardedAd,
-  RewardedAdEventType,
-  TestIds,
-} from 'react-native-google-mobile-ads';
+import Constants, { ExecutionEnvironment } from 'expo-constants';
+import type { InterstitialAd, RewardedAd } from 'react-native-google-mobile-ads';
+
+/** Expo Go has no Google Mobile Ads native module. The dev build and release app do. */
+export const isExpoGo = Constants.executionEnvironment === ExecutionEnvironment.StoreClient;
+
+type AdsModule = typeof import('react-native-google-mobile-ads');
+
+const ads: AdsModule | null = isExpoGo ? null : (require('react-native-google-mobile-ads') as AdsModule);
+
+function nativeAds(): AdsModule {
+  if (!ads) throw new Error('Ads are not available in Expo Go');
+  return ads;
+}
 
 export interface RewardedAdProvider {
   /** Whether the player may try to watch a rewarded ad. */
@@ -24,11 +29,11 @@ export interface RewardedAdProvider {
 const LIVE_REWARDED_UNIT_ID = 'ca-app-pub-5452343649745884/3854200587';
 
 /** Debug builds use Google's test unit so development views are not counted as real traffic. */
-const rewardedUnitId = __DEV__ ? TestIds.REWARDED : LIVE_REWARDED_UNIT_ID;
+const rewardedUnitId = ads ? (__DEV__ ? ads.TestIds.REWARDED : LIVE_REWARDED_UNIT_ID) : '';
 
 /** Live interstitial unit. Release builds request this unit after every fifth level. */
 const LIVE_INTERSTITIAL_UNIT_ID = 'ca-app-pub-5452343649745884/1770962723';
-const interstitialUnitId = __DEV__ ? TestIds.INTERSTITIAL : LIVE_INTERSTITIAL_UNIT_ID;
+const interstitialUnitId = ads ? (__DEV__ ? ads.TestIds.INTERSTITIAL : LIVE_INTERSTITIAL_UNIT_ID) : '';
 
 const INTERSTITIAL_EVERY = 5;
 
@@ -43,7 +48,7 @@ class LevelInterstitial {
     if (this.loading) return this.loading;
 
     this.ad?.destroy();
-    const ad = InterstitialAd.createForAdRequest(interstitialUnitId);
+    const ad = nativeAds().InterstitialAd.createForAdRequest(interstitialUnitId);
     this.ad = ad;
 
     this.loading = new Promise((resolve) => {
@@ -56,8 +61,8 @@ class LevelInterstitial {
         this.loading = null;
         resolve(loaded);
       };
-      const unsubscribeLoaded = ad.addAdEventListener(AdEventType.LOADED, () => finish(true));
-      const unsubscribeError = ad.addAdEventListener(AdEventType.ERROR, () => finish(false));
+      const unsubscribeLoaded = ad.addAdEventListener(nativeAds().AdEventType.LOADED, () => finish(true));
+      const unsubscribeError = ad.addAdEventListener(nativeAds().AdEventType.ERROR, () => finish(false));
       ad.load();
     });
 
@@ -87,8 +92,8 @@ class LevelInterstitial {
         this.preload();
         resolve();
       };
-      const unsubscribeClosed = ad.addAdEventListener(AdEventType.CLOSED, finish);
-      const unsubscribeError = ad.addAdEventListener(AdEventType.ERROR, finish);
+      const unsubscribeClosed = ad.addAdEventListener(nativeAds().AdEventType.CLOSED, finish);
+      const unsubscribeError = ad.addAdEventListener(nativeAds().AdEventType.ERROR, finish);
       ad.show().catch(finish);
     });
   }
@@ -118,14 +123,14 @@ class AdMobRewardedAds implements RewardedAdProvider {
 
   private async start(): Promise<void> {
     try {
-      const info = await AdsConsent.requestInfoUpdate();
-      if (info.isConsentFormAvailable && info.status === AdsConsentStatus.REQUIRED) {
-        await AdsConsent.showForm();
+      const info = await nativeAds().AdsConsent.requestInfoUpdate();
+      if (info.isConsentFormAvailable && info.status === nativeAds().AdsConsentStatus.REQUIRED) {
+        await nativeAds().AdsConsent.showForm();
       }
     } catch {
       // Consent lookup can fail offline. The ad request still goes out, and the SDK enforces its own limits.
     }
-    await mobileAds().initialize();
+    await nativeAds().default().initialize();
     await Promise.all([this.preload(), levelInterstitial.preload()]);
   }
 
@@ -135,7 +140,7 @@ class AdMobRewardedAds implements RewardedAdProvider {
     if (this.loading) return this.loading;
 
     this.ad?.destroy();
-    const ad = RewardedAd.createForAdRequest(rewardedUnitId);
+    const ad = nativeAds().RewardedAd.createForAdRequest(rewardedUnitId);
     this.ad = ad;
 
     this.loading = new Promise((resolve) => {
@@ -148,8 +153,8 @@ class AdMobRewardedAds implements RewardedAdProvider {
         this.loading = null;
         resolve(loaded);
       };
-      const unsubscribeLoaded = ad.addAdEventListener(RewardedAdEventType.LOADED, () => finish(true));
-      const unsubscribeError = ad.addAdEventListener(AdEventType.ERROR, () => finish(false));
+      const unsubscribeLoaded = ad.addAdEventListener(nativeAds().RewardedAdEventType.LOADED, () => finish(true));
+      const unsubscribeError = ad.addAdEventListener(nativeAds().AdEventType.ERROR, () => finish(false));
       ad.load();
     });
 
@@ -185,11 +190,11 @@ class AdMobRewardedAds implements RewardedAdProvider {
         this.preload();
         resolve(rewarded);
       };
-      const unsubscribeReward = ad.addAdEventListener(RewardedAdEventType.EARNED_REWARD, () => {
+      const unsubscribeReward = ad.addAdEventListener(nativeAds().RewardedAdEventType.EARNED_REWARD, () => {
         earned = true;
       });
-      const unsubscribeClosed = ad.addAdEventListener(AdEventType.CLOSED, () => finish(earned));
-      const unsubscribeError = ad.addAdEventListener(AdEventType.ERROR, () => {
+      const unsubscribeClosed = ad.addAdEventListener(nativeAds().AdEventType.CLOSED, () => finish(earned));
+      const unsubscribeError = ad.addAdEventListener(nativeAds().AdEventType.ERROR, () => {
         if (!earned) finish(false);
       });
       ad.show().catch(() => finish(false));
@@ -197,7 +202,13 @@ class AdMobRewardedAds implements RewardedAdProvider {
   }
 }
 
-export const rewardedAds: RewardedAdProvider = new AdMobRewardedAds();
+const unavailableAds: RewardedAdProvider = {
+  isAvailable: () => false,
+  showRewarded: async () => false,
+  prepare: async () => {},
+};
+
+export const rewardedAds: RewardedAdProvider = ads ? new AdMobRewardedAds() : unavailableAds;
 
 /** Starts consent and preloading. Safe to call more than once. */
 export function prepareRewardedAds(): Promise<void> {
@@ -209,6 +220,7 @@ export function prepareRewardedAds(): Promise<void> {
  * Other levels, and a missing ad, resolve without showing anything.
  */
 export async function showLevelInterstitial(levelNumber: number): Promise<void> {
+  if (!ads) return;
   if (!Number.isInteger(levelNumber) || levelNumber <= 0 || levelNumber % INTERSTITIAL_EVERY !== 0) return;
   try {
     await rewardedAds.prepare();

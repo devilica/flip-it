@@ -3,6 +3,7 @@ import { StyleSheet, View } from 'react-native';
 
 import { AppText } from '@/components/ui/AppText';
 import { IconButton } from '@/components/ui/IconButton';
+import { useI18n } from '@/i18n';
 import { spacing } from '@/theme';
 
 interface ScreenHeaderProps {
@@ -12,9 +13,10 @@ interface ScreenHeaderProps {
 }
 
 export function ScreenHeader({ title, onBack, right }: ScreenHeaderProps) {
+  const { t } = useI18n();
   return (
     <View style={styles.row}>
-      <IconButton icon="chevron-back" accessibilityLabel="Back" onPress={onBack} size={46} />
+      <IconButton icon="chevron-back" accessibilityLabel={t('back')} onPress={onBack} size={46} />
       <AppText size={26} weight="bold" style={styles.title}>
         {title}
       </AppText>

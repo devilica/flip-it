@@ -1,11 +1,12 @@
 import type { ReactNode } from 'react';
 import { StyleSheet, View, type StyleProp, type ViewStyle } from 'react-native';
+import Animated, { interpolateColor, useAnimatedStyle } from 'react-native-reanimated';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { BANNER_HEIGHT, BottomBanner } from '@/components/ads/BottomBanner';
 import { AnimatedBackground } from '@/components/effects/AnimatedBackground';
-import { useTheme } from '@/hooks/useTheme';
-import { spacing } from '@/theme';
+import { darkTheme, lightTheme, spacing } from '@/theme';
+import { themeProgress } from '@/theme/blend';
 
 interface ScreenProps {
   children: ReactNode;
@@ -16,10 +17,12 @@ interface ScreenProps {
 
 /** Full-screen container with the animated background and safe-area padding. */
 export function Screen({ children, style, overlay }: ScreenProps) {
-  const theme = useTheme();
   const insets = useSafeAreaInsets();
+  const background = useAnimatedStyle(() => ({
+    backgroundColor: interpolateColor(themeProgress.value, [0, 1], [darkTheme.background, lightTheme.background]),
+  }));
   return (
-    <View style={[styles.root, { backgroundColor: theme.background }]}>
+    <Animated.View style={[styles.root, background]}>
       <AnimatedBackground />
       <View
         style={[
@@ -37,7 +40,7 @@ export function Screen({ children, style, overlay }: ScreenProps) {
       </View>
       {overlay}
       <BottomBanner />
-    </View>
+    </Animated.View>
   );
 }
 

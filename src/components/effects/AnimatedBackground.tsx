@@ -1,10 +1,10 @@
 import { BlurMask, Canvas, Circle, Fill, Group, LinearGradient, useClock, vec } from '@shopify/react-native-skia';
 import { memo } from 'react';
 import { StyleSheet, useWindowDimensions } from 'react-native';
-import { useDerivedValue } from 'react-native-reanimated';
+import { interpolateColor, useDerivedValue } from 'react-native-reanimated';
 
-import { useTheme } from '@/hooks/useTheme';
-import { palette } from '@/theme';
+import { darkTheme, lightTheme, palette } from '@/theme';
+import { themeProgress } from '@/theme/blend';
 
 interface OrbProps {
   color: string;
@@ -35,21 +35,23 @@ function Orb({ color, radius, baseX, baseY, driftX, driftY, period, phase, clock
 
 /** Slowly drifting, heavily blurred color orbs behind every screen. */
 export const AnimatedBackground = memo(function AnimatedBackground() {
-  const theme = useTheme();
   const { width, height } = useWindowDimensions();
   const clock = useClock();
   const r = Math.max(width, height) * 0.32;
+  const colors = useDerivedValue(() => [
+    interpolateColor(themeProgress.value, [0, 1], [darkTheme.backgroundAlt, lightTheme.backgroundAlt]),
+    interpolateColor(themeProgress.value, [0, 1], [darkTheme.background, lightTheme.background]),
+  ]);
+  const orbOpacity = useDerivedValue(
+    () => darkTheme.orbOpacity + (lightTheme.orbOpacity - darkTheme.orbOpacity) * themeProgress.value,
+  );
 
   return (
     <Canvas style={StyleSheet.absoluteFill} pointerEvents="none">
       <Fill>
-        <LinearGradient
-          start={vec(0, 0)}
-          end={vec(width * 0.4, height)}
-          colors={[theme.backgroundAlt, theme.background]}
-        />
+        <LinearGradient start={vec(0, 0)} end={vec(width * 0.4, height)} colors={colors} />
       </Fill>
-      <Group opacity={theme.orbOpacity}>
+      <Group opacity={orbOpacity}>
         <Orb
           clock={clock}
           color={palette.purple}

@@ -1,16 +1,126 @@
+import Ionicons from '@expo/vector-icons/Ionicons';
 import { useRouter } from 'expo-router';
 import { useState, type ReactNode } from 'react';
-import { Alert, ScrollView, StyleSheet, View } from 'react-native';
+import { Alert, Modal, Pressable, ScrollView, StyleSheet, Text, useWindowDimensions, View } from 'react-native';
+import Animated, { interpolateColor, useAnimatedStyle } from 'react-native-reanimated';
 
-import { FlipTutorial } from '@/components/tutorial/FlipTutorial';
 import { AppText } from '@/components/ui/AppText';
 import { GameButton } from '@/components/ui/GameButton';
 import { Screen } from '@/components/ui/Screen';
 import { ScreenHeader } from '@/components/ui/ScreenHeader';
 import { ToggleRow } from '@/components/ui/ToggleRow';
+import { useTheme } from '@/hooks/useTheme';
+import { languageOptions, useI18n } from '@/i18n';
+import { SUPPORTED_LANGUAGES, type Language } from '@/i18n/languages';
 import { feedback } from '@/services/feedback';
 import { useProgressStore } from '@/store/progressStore';
-import { spacing } from '@/theme';
+import { darkTheme, lightTheme, palette, radius, spacing } from '@/theme';
+import { themeProgress } from '@/theme/blend';
+
+const AnimatedPressable = Animated.createAnimatedComponent(Pressable);
+
+function LanguageOption({
+  selected,
+  flag,
+  name,
+  onPress,
+}: {
+  selected: boolean;
+  flag: string;
+  name: string;
+  onPress: () => void;
+}) {
+  const optionStyle = useAnimatedStyle(() => ({
+    backgroundColor: selected
+      ? interpolateColor(themeProgress.value, [0, 1], [darkTheme.surfaceStrong, lightTheme.surfaceStrong])
+      : 'transparent',
+  }));
+  const nameStyle = useAnimatedStyle(() => ({
+    color: interpolateColor(themeProgress.value, [0, 1], [darkTheme.text, lightTheme.text]),
+  }));
+  return (
+    <AnimatedPressable
+      accessibilityRole="button"
+      accessibilityState={{ selected }}
+      onPress={onPress}
+      style={[styles.option, optionStyle]}
+    >
+      <Text style={styles.flag}>{flag}</Text>
+      <Animated.Text style={[styles.nativeName, nameStyle]}>{name}</Animated.Text>
+      {selected ? <Ionicons name="checkmark" size={20} color={palette.purple} /> : null}
+    </AnimatedPressable>
+  );
+}
+
+function LanguageSelect() {
+  const theme = useTheme();
+  const { t } = useI18n();
+  const { height } = useWindowDimensions();
+  const language = useProgressStore((state) => state.settings.language);
+  const updateSettings = useProgressStore((state) => state.updateSettings);
+  const [open, setOpen] = useState(false);
+  const selectStyle = useAnimatedStyle(() => ({
+    backgroundColor: interpolateColor(themeProgress.value, [0, 1], [darkTheme.surfaceStrong, lightTheme.surfaceStrong]),
+  }));
+  const nameStyle = useAnimatedStyle(() => ({
+    color: interpolateColor(themeProgress.value, [0, 1], [darkTheme.text, lightTheme.text]),
+  }));
+  const menuStyle = useAnimatedStyle(() => ({
+    backgroundColor: interpolateColor(themeProgress.value, [0, 1], [darkTheme.background, lightTheme.background]),
+  }));
+  const current =
+    SUPPORTED_LANGUAGES.find((item) => item.code === language) ??
+    SUPPORTED_LANGUAGES.find((item) => item.code === 'en') ??
+    SUPPORTED_LANGUAGES[0];
+
+  const choose = (code: Language) => {
+    updateSettings({ language: code });
+    feedback('button', 'selection');
+    setOpen(false);
+  };
+
+  return (
+    <>
+      <AnimatedPressable
+        accessibilityRole="button"
+        accessibilityLabel={t('language')}
+        onPress={() => {
+          feedback('button', 'selection');
+          setOpen(true);
+        }}
+        style={[styles.select, selectStyle]}
+      >
+        <Text style={styles.flag}>{current.flag}</Text>
+        <Animated.Text style={[styles.nativeName, nameStyle]}>{current.nativeName}</Animated.Text>
+        <Ionicons name="chevron-down" size={20} color={theme.textMuted} />
+      </AnimatedPressable>
+      <Modal visible={open} transparent animationType="fade" onRequestClose={() => setOpen(false)}>
+        <View style={[styles.backdrop, { backgroundColor: theme.overlay }]}>
+          <Pressable accessibilityRole="button" style={StyleSheet.absoluteFill} onPress={() => setOpen(false)} />
+          <Animated.View style={[styles.menu, menuStyle, { maxHeight: height * 0.7 }]}>
+            <AppText size={18} weight="bold">
+              {t('language')}
+            </AppText>
+            <ScrollView style={{ maxHeight: height * 0.56 }} showsVerticalScrollIndicator={false}>
+              {languageOptions().map((item) => {
+                const selected = item.code === language;
+                return (
+                  <LanguageOption
+                    key={item.code}
+                    selected={selected}
+                    flag={item.flag}
+                    name={item.nativeName}
+                    onPress={() => choose(item.code)}
+                  />
+                );
+              })}
+            </ScrollView>
+          </Animated.View>
+        </View>
+      </Modal>
+    </>
+  );
+}
 
 function Section({ title, children }: { title: string; children: ReactNode }) {
   return (
@@ -25,19 +135,16 @@ function Section({ title, children }: { title: string; children: ReactNode }) {
 
 export function SettingsScreen() {
   const router = useRouter();
+  const { t } = useI18n();
   const settings = useProgressStore((state) => state.settings);
   const updateSettings = useProgressStore((state) => state.updateSettings);
   const resetProgress = useProgressStore((state) => state.resetProgress);
-  const [tutorialOpen, setTutorialOpen] = useState(false);
 
   const confirmReset = () => {
-    Alert.alert(
-      'Reset progress?',
-      'This deletes all solved levels, stars, best scores and daily results. Settings are kept. This cannot be undone.',
-      [
-        { text: 'Cancel', style: 'cancel' },
+    Alert.alert(t('resetTitle'), t('resetBody'), [
+        { text: t('cancel'), style: 'cancel' },
         {
-          text: 'Reset',
+          text: t('reset'),
           style: 'destructive',
           onPress: () => {
             resetProgress();
@@ -49,37 +156,32 @@ export function SettingsScreen() {
   };
 
   return (
-    <Screen overlay={tutorialOpen ? <FlipTutorial onDone={() => setTutorialOpen(false)} /> : undefined}>
-      <ScreenHeader title="Settings" onBack={() => router.back()} />
+    <Screen>
+      <ScreenHeader title={t('settings')} onBack={() => router.back()} />
       <ScrollView contentContainerStyle={styles.scroll} showsVerticalScrollIndicator={false}>
-        <Section title="AUDIO">
-          <ToggleRow icon="volume-high" label="Sound effects" value={settings.sound} onChange={(sound) => updateSettings({ sound })} />
-          <ToggleRow icon="musical-notes" label="Music" value={settings.music} onChange={(music) => updateSettings({ music })} />
+        <Section title={t('audio').toLocaleUpperCase()}>
+          <ToggleRow icon="volume-high" label={t('soundEffects')} value={settings.sound} onChange={(sound) => updateSettings({ sound })} />
+          <ToggleRow icon="musical-notes" label={t('music')} value={settings.music} onChange={(music) => updateSettings({ music })} />
         </Section>
-        <Section title="FEEL">
-          <ToggleRow icon="phone-portrait" label="Vibration" value={settings.haptics} onChange={(haptics) => updateSettings({ haptics })} />
+        <Section title={t('feel').toLocaleUpperCase()}>
+          <ToggleRow icon="phone-portrait" label={t('vibration')} value={settings.haptics} onChange={(haptics) => updateSettings({ haptics })} />
         </Section>
-        <Section title="APPEARANCE">
+        <Section title={t('appearance').toLocaleUpperCase()}>
           <ToggleRow
             icon={settings.theme === 'dark' ? 'moon' : 'sunny'}
-            label="Dark theme"
+            label={t('darkTheme')}
             value={settings.theme === 'dark'}
             onChange={(dark) => updateSettings({ theme: dark ? 'dark' : 'light' })}
           />
         </Section>
-        <Section title="HOW TO PLAY">
-          <GameButton
-            label="How to play"
-            icon="help-circle"
-            variant="secondary"
-            onPress={() => setTutorialOpen(true)}
-          />
+        <Section title={t('language').toLocaleUpperCase()}>
+          <LanguageSelect />
         </Section>
-        <Section title="DATA">
-          <GameButton label="Reset progress" icon="trash" variant="danger" onPress={confirmReset} />
+        <Section title={t('data').toLocaleUpperCase()}>
+          <GameButton label={t('resetProgress')} icon="trash" variant="danger" onPress={confirmReset} />
         </Section>
         <AppText size={13} tone="subtle" align="center" style={styles.footer}>
-          FLIP IT! 1.0 · Plays fully offline · Progress is saved on this device
+          {t('footer')}
         </AppText>
       </ScrollView>
     </Screen>
@@ -92,4 +194,24 @@ const styles = StyleSheet.create({
   sectionTitle: { marginLeft: spacing.xs },
   sectionBody: { gap: spacing.sm },
   footer: { marginTop: spacing.md },
+  select: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: spacing.md,
+    borderRadius: radius.lg,
+    paddingHorizontal: spacing.lg,
+    paddingVertical: spacing.md,
+  },
+  backdrop: { flex: 1, justifyContent: 'center', padding: spacing.lg },
+  menu: { borderRadius: radius.xl, padding: spacing.lg, gap: spacing.md },
+  option: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: spacing.md,
+    borderRadius: radius.md,
+    paddingHorizontal: spacing.md,
+    paddingVertical: spacing.sm,
+  },
+  flag: { fontSize: 22 },
+  nativeName: { flex: 1, fontSize: 16 },
 });

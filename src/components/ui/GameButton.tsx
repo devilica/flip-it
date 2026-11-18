@@ -20,8 +20,11 @@ interface GameButtonProps {
   variant?: Variant;
   size?: Size;
   icon?: IconName;
-  /** Small secondary line under the label. */
+  /** Drawn in the icon slot, such as the mascot. */
+  leading?: ReactNode;
+  /** Small secondary line. Sits under the label, or beside it when captionPosition is beside. */
   caption?: string;
+  captionPosition?: 'below' | 'beside';
   trailing?: ReactNode;
   disabled?: boolean;
   style?: StyleProp<ViewStyle>;
@@ -36,7 +39,9 @@ export function GameButton({
   variant = 'primary',
   size = 'md',
   icon,
+  leading,
   caption,
+  captionPosition = 'below',
   trailing,
   disabled,
   style,
@@ -51,13 +56,18 @@ export function GameButton({
 
   const content = (
     <View style={styles.row}>
+      {leading}
       {icon ? <Ionicons name={icon} size={fontSizes[size] + 4} color={textColor} /> : null}
-      <View style={styles.labels}>
+      <View style={[styles.labels, captionPosition === 'beside' && styles.labelsBeside]}>
         <AppText size={fontSizes[size]} weight="semibold" color={textColor}>
           {label}
         </AppText>
         {caption ? (
-          <AppText size={12} weight="medium" color={onGradient ? 'rgba(255,255,255,0.8)' : theme.textMuted}>
+          <AppText
+            size={captionPosition === 'beside' ? Math.max(14, fontSizes[size] - 6) : 12}
+            weight="medium"
+            color={onGradient ? 'rgba(255,255,255,0.8)' : theme.textMuted}
+          >
             {caption}
           </AppText>
         ) : null}
@@ -70,7 +80,7 @@ export function GameButton({
     <Animated.View style={[animatedStyle, disabled && styles.disabled, style]}>
       <Pressable
         accessibilityRole="button"
-        accessibilityLabel={label}
+        accessibilityLabel={caption ? `${label}, ${caption}` : label}
         disabled={disabled}
         onPressIn={() => {
           scale.value = withSpring(0.95, { damping: 15, stiffness: 400 });
@@ -135,5 +145,6 @@ const styles = StyleSheet.create({
     gap: spacing.md,
   },
   labels: { alignItems: 'center' },
+  labelsBeside: { flexDirection: 'row', gap: spacing.sm },
   disabled: { opacity: 0.45 },
 });

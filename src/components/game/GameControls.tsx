@@ -1,6 +1,7 @@
 import { StyleSheet, View } from 'react-native';
 
 import { IconButton } from '@/components/ui/IconButton';
+import { useI18n } from '@/i18n';
 import { spacing } from '@/theme';
 
 interface GameControlsProps {
@@ -24,12 +25,13 @@ export function GameControls({
   onRestart,
   onHint,
 }: GameControlsProps) {
+  const { t } = useI18n();
   return (
     <View style={styles.row}>
       <IconButton
         icon="arrow-undo"
-        label="Undo"
-        accessibilityLabel="Undo last move"
+        label={t('undo')}
+        accessibilityLabel={t('undoLast')}
         onPress={onUndo}
         disabled={disabled || !canUndo}
         size={60}
@@ -37,8 +39,8 @@ export function GameControls({
       />
       <IconButton
         icon="refresh"
-        label="Restart"
-        accessibilityLabel="Restart level"
+        label={t('restart')}
+        accessibilityLabel={t('restartLevel')}
         onPress={onRestart}
         disabled={disabled || !canRestart}
         size={60}
@@ -46,9 +48,9 @@ export function GameControls({
       />
       <IconButton
         icon={hintActive ? 'bulb' : 'bulb-outline'}
-        label="Hint"
+        label={t('hintLabel')}
         accessibilityLabel={
-          hintsLeft <= 0 && !hintActive ? 'Watch an ad for more hints' : `Show hint, ${hintsLeft} left`
+          hintsLeft <= 0 && !hintActive ? t('watchMoreHints') : t('showHintLeft', { n: hintsLeft })
         }
         onPress={onHint}
         disabled={disabled}

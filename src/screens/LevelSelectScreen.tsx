@@ -20,6 +20,7 @@ import { UNLOCK_ALL_LEVELS } from '@/config/dev';
 import { levelConfig } from '@/game/generator';
 import { TOTAL_LEVELS } from '@/game/levels';
 import { useTheme } from '@/hooks/useTheme';
+import { useI18n } from '@/i18n';
 import { feedback } from '@/services/feedback';
 import { completedCount, totalStars } from '@/store/progressModel';
 import { useProgressStore } from '@/store/progressStore';
@@ -30,13 +31,13 @@ const NODE = 68;
 
 const levels = Array.from({ length: TOTAL_LEVELS }, (_, i) => i + 1);
 
-function worldLabel(level: number): string | null {
+function worldLabel(level: number, t: ReturnType<typeof useI18n>['t']): string | null {
   const config = levelConfig(level);
-  if (level === 1) return `${config.size}×${config.size} · Warm-up`;
+  if (level === 1) return t('warmup', { n: config.size });
   const previous = levelConfig(level - 1);
-  if (config.size !== previous.size) return `${config.size}×${config.size} grid`;
-  if (level === 41) return 'New: 3 colors';
-  if (level === 101) return 'Master puzzles';
+  if (config.size !== previous.size) return t('gridSize', { n: config.size });
+  if (level === 41) return t('newThreeColors');
+  if (level === 101) return t('masterPuzzles');
   return null;
 }
 
@@ -55,6 +56,7 @@ interface LevelNodeProps {
 
 const LevelNode = memo(function LevelNode({ level, state, stars, amplitude, onPress }: LevelNodeProps) {
   const theme = useTheme();
+  const { t } = useI18n();
   const pulse = useSharedValue(1);
 
   useEffect(() => {
@@ -66,7 +68,7 @@ const LevelNode = memo(function LevelNode({ level, state, stars, amplitude, onPr
   }, [pulse, state]);
 
   const pulseStyle = useAnimatedStyle(() => ({ transform: [{ scale: pulse.value }] }));
-  const label = worldLabel(level);
+  const label = worldLabel(level, t);
   const offset = wave(level) * amplitude;
   const nextOffset = wave(level + 1) * amplitude;
 
@@ -107,7 +109,7 @@ const LevelNode = memo(function LevelNode({ level, state, stars, amplitude, onPr
         <Animated.View style={pulseStyle}>
           <Pressable
             accessibilityRole="button"
-            accessibilityLabel={state === 'locked' ? `Level ${level}, locked` : `Level ${level}`}
+            accessibilityLabel={state === 'locked' ? t('levelLocked', { n: level }) : t('levelN', { n: level })}
             accessibilityState={{ disabled: state === 'locked' }}
             disabled={state === 'locked'}
             onPress={() => onPress(level)}
@@ -146,6 +148,7 @@ const LevelNode = memo(function LevelNode({ level, state, stars, amplitude, onPr
 export function LevelSelectScreen() {
   const router = useRouter();
   const theme = useTheme();
+  const { t } = useI18n();
   const { width } = useWindowDimensions();
   const unlockedLevel = useProgressStore((state) => state.unlockedLevel);
   const stars = useProgressStore((state) => state.stars);
@@ -177,7 +180,7 @@ export function LevelSelectScreen() {
       <View style={[styles.summary, { backgroundColor: theme.surface }]}>
         <View style={styles.summaryRow}>
           <AppText size={15} weight="semibold">
-            {completed} of {TOTAL_LEVELS} solved
+            {t('solvedOf', { done: completed, total: TOTAL_LEVELS })}
           </AppText>
           <View style={styles.starTotal}>
             <Ionicons name="star" size={16} color={theme.star} />
@@ -189,12 +192,12 @@ export function LevelSelectScreen() {
         <ProgressBar value={completed / TOTAL_LEVELS} />
       </View>
     ),
-    [completed, starTotal, theme],
+    [completed, starTotal, t, theme],
   );
 
   return (
     <Screen>
-      <ScreenHeader title="Levels" onBack={() => router.back()} />
+      <ScreenHeader title={t('levels')} onBack={() => router.back()} />
       {header}
       <FlatList
         data={levels}

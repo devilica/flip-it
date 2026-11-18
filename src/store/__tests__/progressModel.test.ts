@@ -45,7 +45,7 @@ describe('progress model', () => {
     expect(migrated.saveVersion).toBe(CURRENT_SAVE_VERSION);
     expect(migrated.unlockedLevel).toBe(7);
     expect(migrated.stars).toEqual({ '1': 3 });
-    expect(migrated.settings).toEqual({ sound: false, music: true, haptics: true, theme: 'dark' });
+    expect(migrated.settings).toEqual({ sound: false, music: true, haptics: true, theme: 'dark', language: 'en' });
     expect(migrated.session).toBeNull();
     expect(migrated.tutorialSeen).toBe(false);
   });

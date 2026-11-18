@@ -10,8 +10,9 @@ import { NavigationBar } from 'expo-navigation-bar';
 import { Stack } from 'expo-router';
 import * as SplashScreen from 'expo-splash-screen';
 import { StatusBar } from 'expo-status-bar';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { StyleSheet } from 'react-native';
+import { runOnJS, useAnimatedReaction } from 'react-native-reanimated';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 
@@ -19,7 +20,10 @@ import { prefetchLevels } from '@/game/levels';
 import { useSettingsSync } from '@/hooks/useSettingsSync';
 import { prepareRewardedAds } from '@/services/ads';
 import { useTheme } from '@/hooks/useTheme';
+import { themeProgress } from '@/theme/blend';
+import { useFlipCodeHydrated } from '@/store/flipCodeStore';
 import { useHasHydrated, useProgressStore } from '@/store/progressStore';
+import { useSudokuHydrated } from '@/store/sudokuStore';
 
 SplashScreen.preventAutoHideAsync().catch(() => {});
 
@@ -32,9 +36,19 @@ export default function RootLayout() {
     ...Ionicons.font,
   });
   const hydrated = useHasHydrated();
+  const sudokuHydrated = useSudokuHydrated();
+  const flipCodeHydrated = useFlipCodeHydrated();
   const theme = useTheme();
+  const [lightSurface, setLightSurface] = useState(theme.name === 'light');
   const unlockedLevel = useProgressStore((state) => state.unlockedLevel);
-  const ready = (fontsLoaded || fontError !== null) && hydrated;
+
+  useAnimatedReaction(
+    () => themeProgress.value >= 0.5,
+    (light, previous) => {
+      if (previous == null || light !== previous) runOnJS(setLightSurface)(light);
+    },
+  );
+  const ready = (fontsLoaded || fontError !== null) && hydrated && sudokuHydrated && flipCodeHydrated;
 
   useSettingsSync(hydrated);
 
@@ -56,7 +70,7 @@ export default function RootLayout() {
 
   if (!ready) return null;
 
-  const barStyle = theme.name === 'dark' ? 'light' : 'dark';
+  const barStyle = lightSurface ? 'dark' : 'light';
 
   return (
     <GestureHandlerRootView style={[styles.root, { backgroundColor: theme.background }]}>
@@ -66,11 +80,19 @@ export default function RootLayout() {
         <Stack
           screenOptions={{
             headerShown: false,
-            animation: 'fade',
+            animation: 'slide_from_right',
             contentStyle: { backgroundColor: theme.background },
           }}
         >
           <Stack.Screen name="index" />
+          <Stack.Screen name="flip" options={{ animation: 'slide_from_right' }} />
+          <Stack.Screen name="sudoku/index" options={{ animation: 'slide_from_right' }} />
+          <Stack.Screen name="sudoku/levels" options={{ animation: 'slide_from_bottom' }} />
+          <Stack.Screen name="sudoku/[level]" options={{ animation: 'slide_from_right' }} />
+          <Stack.Screen name="sudoku/daily" options={{ animation: 'slide_from_right' }} />
+          <Stack.Screen name="flip-code/index" options={{ animation: 'slide_from_right' }} />
+          <Stack.Screen name="flip-code/play" options={{ animation: 'slide_from_right' }} />
+          <Stack.Screen name="flip-code/daily" options={{ animation: 'slide_from_right' }} />
           <Stack.Screen name="play/[level]" options={{ animation: 'slide_from_right' }} />
           <Stack.Screen name="daily" options={{ animation: 'slide_from_right' }} />
           <Stack.Screen name="levels" options={{ animation: 'slide_from_bottom' }} />
