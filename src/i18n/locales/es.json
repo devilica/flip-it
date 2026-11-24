@@ -162,5 +162,20 @@
   "resetBody": "Esto borra todos los niveles resueltos, las estrellas, las mejores marcas y los resultados diarios. Los ajustes se conservan. No se puede deshacer.",
   "cancel": "Cancelar",
   "reset": "Restablecer",
-  "footer": "FLIP IT! 1.0 · Se juega del todo sin conexión · El progreso se guarda en este dispositivo"
+  "legal": "Legal",
+  "privacyPolicy": "Política de privacidad",
+  "termsOfUse": "Términos de uso",
+  "footer": "FLIP IT! 1.0 · Se juega del todo sin conexión · El progreso se guarda en este dispositivo",
+  "flipName": "FLIP IT!",
+  "leaderboards": "Clasificaciones",
+  "dailyRank": "Hoy",
+  "weeklyRank": "Esta semana",
+  "allTimeRank": "Histórico",
+  "yourRank": "Tu puesto",
+  "signInForRanks": "Entra con Play Games para ver la clasificación mundial.",
+  "signInPlayGames": "Entrar",
+  "playGamesUnavailable": "Play Games funciona en la aplicación instalada, no en Expo Go.",
+  "leaderboardEmpty": "Todavía no hay puntuaciones en este periodo.",
+  "leaderboardFailed": "No se pudo cargar la clasificación.",
+  "openPlayGames": "Abrir en Play Games"
 }

@@ -162,5 +162,20 @@
   "resetBody": "Dette sletter alle løste niveauer, stjerner, bedste resultater og daglige resultater. Indstillinger beholdes. Det kan ikke fortrydes.",
   "cancel": "Annuller",
   "reset": "Nulstil",
-  "footer": "FLIP IT! 1.0 · Spilles helt uden net · Fremskridt gemmes på denne enhed"
+  "legal": "Juridisk",
+  "privacyPolicy": "Privatlivspolitik",
+  "termsOfUse": "Brugsbetingelser",
+  "footer": "FLIP IT! 1.0 · Spilles helt uden net · Fremskridt gemmes på denne enhed",
+  "flipName": "FLIP IT!",
+  "leaderboards": "Ranglister",
+  "dailyRank": "I dag",
+  "weeklyRank": "Denne uge",
+  "allTimeRank": "Altid",
+  "yourRank": "Din placering",
+  "signInForRanks": "Log ind med Play Games for at se verdensranglisten.",
+  "signInPlayGames": "Log ind",
+  "playGamesUnavailable": "Play Games virker i den installerede app, ikke i Expo Go.",
+  "leaderboardEmpty": "Ingen resultater for denne periode endnu.",
+  "leaderboardFailed": "Ranglisten kunne ikke indlæses.",
+  "openPlayGames": "Åbn i Play Games"
 }

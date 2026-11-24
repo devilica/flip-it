@@ -162,5 +162,20 @@
   "resetBody": "هذا يحذف كل المستويات المحلولة والنجوم وأفضل النتائج ونتائج اليوم. تبقى الإعدادات. لا يمكن التراجع.",
   "cancel": "إلغاء",
   "reset": "إعادة ضبط",
-  "footer": "FLIP IT! 1.0 · يعمل دون اتصال بالكامل · يُحفظ التقدم على هذا الجهاز"
+  "legal": "قانوني",
+  "privacyPolicy": "سياسة الخصوصية",
+  "termsOfUse": "شروط الاستخدام",
+  "footer": "FLIP IT! 1.0 · يعمل دون اتصال بالكامل · يُحفظ التقدم على هذا الجهاز",
+  "flipName": "FLIP IT!",
+  "leaderboards": "لوحات الصدارة",
+  "dailyRank": "اليوم",
+  "weeklyRank": "هذا الأسبوع",
+  "allTimeRank": "كل الأوقات",
+  "yourRank": "ترتيبك",
+  "signInForRanks": "سجّل الدخول عبر Play Games لترى الترتيب العالمي.",
+  "signInPlayGames": "تسجيل الدخول",
+  "playGamesUnavailable": "Play Games يعمل مع التطبيق المثبّت، وليس مع Expo Go.",
+  "leaderboardEmpty": "لا توجد نتائج لهذه الفترة بعد.",
+  "leaderboardFailed": "تعذر تحميل الترتيب.",
+  "openPlayGames": "فتح في Play Games"
 }

@@ -18,6 +18,7 @@ import { canSubmit, hintSlot, isLosingBoard, isWinningScore, scoreGuess } from '
 import { ATTEMPT_LIMIT, createCode, starsForAttempts } from '@/flip-code/generate';
 import type { Difficulty, FlipCodeSession, MascotId } from '@/flip-code/types';
 import { useI18n, type MessageKey } from '@/i18n';
+import { submitScore } from '@/play-games/service';
 import { rewardedAds, showLevelInterstitial } from '@/services/ads';
 import { feedback } from '@/services/feedback';
 import { useFlipCodeStore } from '@/store/flipCodeStore';
@@ -114,7 +115,10 @@ export function FlipCodeScreen({ difficulty, daily = false }: FlipCodeScreenProp
     if (!finished || recorded.current) return;
     recorded.current = true;
     feedback(won ? 'win' : 'fail', won ? 'success' : 'warning');
+    const winsBefore = useFlipCodeStore.getState().won;
     recordResult(won, session.guesses.length, session.daily, session.dateKey);
+    const wins = useFlipCodeStore.getState().won;
+    if (wins > winsBefore) submitScore('flip-code', wins).catch(() => {});
   }, [finished, recordResult, session.daily, session.dateKey, session.guesses.length, won]);
 
   const choose = (id: MascotId) => {

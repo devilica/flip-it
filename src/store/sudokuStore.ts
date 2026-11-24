@@ -22,6 +22,8 @@ interface SudokuActions {
   clearSession: () => void;
   recordWin: (levelNumber: number, stars: number, lightbulbsUsed: number) => void;
   clearDaily: (dateKey: string) => void;
+  /** Wipes levels, stars, the daily clear, and any unfinished puzzle. */
+  resetProgress: () => void;
 }
 
 const empty = (): SudokuData => ({
@@ -56,6 +58,8 @@ export const useSudokuStore = create<SudokuData & SudokuActions>()(
       },
 
       clearDaily: (dateKey) => set({ dailyCleared: dateKey, session: null }),
+
+      resetProgress: () => set(empty()),
     }),
     {
       name: 'flip-sudoku-save',

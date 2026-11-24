@@ -162,5 +162,20 @@
   "resetBody": "এতে সব সমাধান করা লেভেল, তারা, সেরা নম্বর ও দৈনিক ফলাফল মুছে যাবে। সেটিংস থাকবে। এটি ফেরানো যাবে না।",
   "cancel": "বাতিল",
   "reset": "রিসেট",
-  "footer": "FLIP IT! 1.0 · সম্পূর্ণ অফলাইনে চলে · অগ্রগতি এই ডিভাইসে সংরক্ষিত"
+  "legal": "আইনি",
+  "privacyPolicy": "গোপনীয়তা নীতি",
+  "termsOfUse": "ব্যবহারের শর্তাবলী",
+  "footer": "FLIP IT! 1.0 · সম্পূর্ণ অফলাইনে চলে · অগ্রগতি এই ডিভাইসে সংরক্ষিত",
+  "flipName": "FLIP IT!",
+  "leaderboards": "লিডারবোর্ড",
+  "dailyRank": "দৈনিক",
+  "weeklyRank": "সাপ্তাহিক",
+  "allTimeRank": "সর্বকালের",
+  "yourRank": "তোমার র‍্যাঙ্ক",
+  "signInForRanks": "বিশ্ব র‍্যাঙ্কিং দেখতে Play Games-এ সাইন ইন করো।",
+  "signInPlayGames": "সাইন ইন",
+  "playGamesUnavailable": "Play Games ইনস্টল করা অ্যাপে চলে, Expo Go-তে নয়।",
+  "leaderboardEmpty": "এই সময়ে এখনও কোনো স্কোর নেই।",
+  "leaderboardFailed": "র‍্যাঙ্কিং লোড করা যায়নি।",
+  "openPlayGames": "Play Games-এ খোলো"
 }

@@ -1,0 +1,2 @@
+expo.modules.playgames
+string game_services_project_id

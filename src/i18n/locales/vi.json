@@ -162,5 +162,20 @@
   "resetBody": "Thao tác này xóa mọi màn đã giải, sao, điểm cao nhất và kết quả hằng ngày. Cài đặt được giữ. Không thể hoàn tác.",
   "cancel": "Hủy",
   "reset": "Đặt lại",
-  "footer": "FLIP IT! 1.0 · Chơi hoàn toàn ngoại tuyến · Tiến trình được lưu trên thiết bị này"
+  "legal": "Pháp lý",
+  "privacyPolicy": "Chính sách quyền riêng tư",
+  "termsOfUse": "Điều khoản sử dụng",
+  "footer": "FLIP IT! 1.0 · Chơi hoàn toàn ngoại tuyến · Tiến trình được lưu trên thiết bị này",
+  "flipName": "FLIP IT!",
+  "leaderboards": "Bảng xếp hạng",
+  "dailyRank": "Hôm nay",
+  "weeklyRank": "Tuần này",
+  "allTimeRank": "Mọi thời đại",
+  "yourRank": "Hạng của bạn",
+  "signInForRanks": "Đăng nhập Play Games để xem bảng xếp hạng thế giới.",
+  "signInPlayGames": "Đăng nhập",
+  "playGamesUnavailable": "Play Games chạy trên ứng dụng đã cài, không chạy trong Expo Go.",
+  "leaderboardEmpty": "Chưa có điểm cho giai đoạn này.",
+  "leaderboardFailed": "Không tải được bảng xếp hạng.",
+  "openPlayGames": "Mở trong Play Games"
 }

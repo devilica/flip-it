@@ -28,6 +28,8 @@ interface FlipCodeActions {
   recordResult: (won: boolean, attempts: number, daily: boolean, dateKey: string | null) => void;
   /** Keeps the daily streak across exactly one missed day. */
   saveDailyStreak: (today: string) => boolean;
+  /** Wipes wins, streaks, the daily clear, and any unfinished code. */
+  resetProgress: () => void;
 }
 
 const empty = (): FlipCodeData => ({
@@ -78,6 +80,8 @@ export const useFlipCodeStore = create<FlipCodeData & FlipCodeActions>()(
         set({ streakBridge: shiftDateKey(today, -1) });
         return true;
       },
+
+      resetProgress: () => set(empty()),
     }),
     {
       name: 'flip-code-save',

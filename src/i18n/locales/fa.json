@@ -162,5 +162,20 @@
   "resetBody": "این کار همه مرحله‌های حل‌شده، ستاره‌ها، بهترین نتیجه‌ها و نتیجه‌های روزانه را پاک می‌کند. تنظیمات می‌ماند. برگشت‌پذیر نیست.",
   "cancel": "لغو",
   "reset": "بازنشانی",
-  "footer": "FLIP IT! 1.0 · کاملاً بدون اینترنت بازی می‌کند · پیشرفت روی این دستگاه ذخیره می‌شود"
+  "legal": "حقوقی",
+  "privacyPolicy": "سیاست حریم خصوصی",
+  "termsOfUse": "شرایط استفاده",
+  "footer": "FLIP IT! 1.0 · کاملاً بدون اینترنت بازی می‌کند · پیشرفت روی این دستگاه ذخیره می‌شود",
+  "flipName": "FLIP IT!",
+  "leaderboards": "جدول امتیازات",
+  "dailyRank": "امروز",
+  "weeklyRank": "این هفته",
+  "allTimeRank": "تمام دوران",
+  "yourRank": "رتبه تو",
+  "signInForRanks": "برای دیدن رتبه جهانی با Play Games وارد شو.",
+  "signInPlayGames": "ورود",
+  "playGamesUnavailable": "Play Games در برنامه نصب‌شده کار می‌کند، نه در Expo Go.",
+  "leaderboardEmpty": "هنوز امتیازی برای این دوره نیست.",
+  "leaderboardFailed": "رتبه بار نشد.",
+  "openPlayGames": "باز کردن در Play Games"
 }

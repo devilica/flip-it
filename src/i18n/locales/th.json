@@ -162,5 +162,20 @@
   "resetBody": "การทำนี้จะลบด่านที่แก้แล้ว ดาว คะแนนดีที่สุด และผลรายวัน การตั้งค่ายังอยู่ และย้อนกลับไม่ได้",
   "cancel": "ยกเลิก",
   "reset": "ล้าง",
-  "footer": "FLIP IT! 1.0 · เล่นได้โดยไม่ต้องต่อเน็ต · บันทึกความคืบหน้าไว้ในเครื่องนี้"
+  "legal": "กฎหมาย",
+  "privacyPolicy": "นโยบายความเป็นส่วนตัว",
+  "termsOfUse": "ข้อกำหนดการใช้งาน",
+  "footer": "FLIP IT! 1.0 · เล่นได้โดยไม่ต้องต่อเน็ต · บันทึกความคืบหน้าไว้ในเครื่องนี้",
+  "flipName": "FLIP IT!",
+  "leaderboards": "ตารางอันดับ",
+  "dailyRank": "วันนี้",
+  "weeklyRank": "สัปดาห์นี้",
+  "allTimeRank": "ตลอดกาล",
+  "yourRank": "อันดับของคุณ",
+  "signInForRanks": "ลงชื่อเข้า Play Games เพื่อดูอันดับโลก",
+  "signInPlayGames": "ลงชื่อเข้าใช้",
+  "playGamesUnavailable": "Play Games ใช้ได้ในแอปที่ติดตั้ง ไม่ใช่ใน Expo Go",
+  "leaderboardEmpty": "ยังไม่มีคะแนนในช่วงนี้",
+  "leaderboardFailed": "โหลดอันดับไม่ได้",
+  "openPlayGames": "เปิดใน Play Games"
 }

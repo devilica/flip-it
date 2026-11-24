@@ -162,5 +162,20 @@
   "resetBody": "这将删除所有已解开的关卡、星级、最佳成绩和每日结果。设置会保留。此操作无法撤销。",
   "cancel": "取消",
   "reset": "重置",
-  "footer": "FLIP IT! 1.0 · 完全离线可玩 · 进度保存在本设备"
+  "legal": "法律信息",
+  "privacyPolicy": "隐私政策",
+  "termsOfUse": "使用条款",
+  "footer": "FLIP IT! 1.0 · 完全离线可玩 · 进度保存在本设备",
+  "flipName": "FLIP IT!",
+  "leaderboards": "排行榜",
+  "dailyRank": "今日",
+  "weeklyRank": "本周",
+  "allTimeRank": "总榜",
+  "yourRank": "你的排名",
+  "signInForRanks": "登录 Play Games 即可查看世界排名。",
+  "signInPlayGames": "登录",
+  "playGamesUnavailable": "Play Games 只在已安装的应用里可用，不能在 Expo Go 里用。",
+  "leaderboardEmpty": "这个时段还没有分数。",
+  "leaderboardFailed": "无法加载排名。",
+  "openPlayGames": "在 Play Games 中打开"
 }

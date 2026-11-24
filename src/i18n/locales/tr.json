@@ -162,5 +162,20 @@
   "resetBody": "Bu, çözülen tüm seviyeleri, yıldızları, en iyi sonuçları ve günlük sonuçları siler. Ayarlar kalır. Bu geri alınamaz.",
   "cancel": "İptal",
   "reset": "Sıfırla",
-  "footer": "FLIP IT! 1.0 · Tamamen çevrimdışı oynar · İlerleme bu cihazda saklanır"
+  "legal": "Yasal",
+  "privacyPolicy": "Gizlilik politikası",
+  "termsOfUse": "Kullanım koşulları",
+  "footer": "FLIP IT! 1.0 · Tamamen çevrimdışı oynar · İlerleme bu cihazda saklanır",
+  "flipName": "FLIP IT!",
+  "leaderboards": "Sıralamalar",
+  "dailyRank": "Bugün",
+  "weeklyRank": "Bu hafta",
+  "allTimeRank": "Tüm zamanlar",
+  "yourRank": "Sıran",
+  "signInForRanks": "Dünya sıralamasını görmek için Play Games ile giriş yap.",
+  "signInPlayGames": "Giriş yap",
+  "playGamesUnavailable": "Play Games yüklü uygulamada çalışır, Expo Go'da çalışmaz.",
+  "leaderboardEmpty": "Bu dönem için henüz skor yok.",
+  "leaderboardFailed": "Sıralama yüklenemedi.",
+  "openPlayGames": "Play Games'te aç"
 }

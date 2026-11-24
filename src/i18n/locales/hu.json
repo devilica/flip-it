@@ -162,5 +162,20 @@
   "resetBody": "Ez törli az összes megoldott pályát, a csillagokat, a legjobb eredményeket és a napi eredményeket. A beállítások megmaradnak. Ez nem vonható vissza.",
   "cancel": "Mégse",
   "reset": "Visszaállítás",
-  "footer": "FLIP IT! 1.0 · Teljesen internet nélkül játszható · A haladás ezen az eszközön tárolódik"
+  "legal": "Jogi információk",
+  "privacyPolicy": "Adatvédelmi irányelvek",
+  "termsOfUse": "Felhasználási feltételek",
+  "footer": "FLIP IT! 1.0 · Teljesen internet nélkül játszható · A haladás ezen az eszközön tárolódik",
+  "flipName": "FLIP IT!",
+  "leaderboards": "Ranglisták",
+  "dailyRank": "Ma",
+  "weeklyRank": "E hét",
+  "allTimeRank": "Minden idők",
+  "yourRank": "A helyezésed",
+  "signInForRanks": "Jelentkezz be a Play Gamesbe a világranglistához.",
+  "signInPlayGames": "Belépés",
+  "playGamesUnavailable": "A Play Games a telepített alkalmazásban működik, Expo Go-ban nem.",
+  "leaderboardEmpty": "Erre az időszakra még nincs eredmény.",
+  "leaderboardFailed": "A ranglistát nem sikerült betölteni.",
+  "openPlayGames": "Megnyitás a Play Gamesben"
 }

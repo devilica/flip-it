@@ -162,5 +162,20 @@
   "resetBody": "Tiks dzēsti visi atrisinātie līmeņi, zvaigznes, labākie rezultāti un dienas rezultāti. Iestatījumi paliek. To nevar atsaukt.",
   "cancel": "Atcelt",
   "reset": "Atiestatīt",
-  "footer": "FLIP IT! 1.0 · Spēle darbojas pilnībā bez tīkla · Progress tiek saglabāts šajā ierīcē"
+  "legal": "Juridiskā informācija",
+  "privacyPolicy": "Privātuma politika",
+  "termsOfUse": "Lietošanas noteikumi",
+  "footer": "FLIP IT! 1.0 · Spēle darbojas pilnībā bez tīkla · Progress tiek saglabāts šajā ierīcē",
+  "flipName": "FLIP IT!",
+  "leaderboards": "Līderu saraksti",
+  "dailyRank": "Šodien",
+  "weeklyRank": "Šonedēļ",
+  "allTimeRank": "Visu laiku",
+  "yourRank": "Tava vieta",
+  "signInForRanks": "Pieraksties ar Play Games, lai redzētu pasaules sarakstu.",
+  "signInPlayGames": "Pierakstīties",
+  "playGamesUnavailable": "Play Games darbojas instalētajā lietotnē, nevis Expo Go.",
+  "leaderboardEmpty": "Šim periodam vēl nav rezultātu.",
+  "leaderboardFailed": "Neizdevās ielādēt sarakstu.",
+  "openPlayGames": "Atvērt Play Games"
 }

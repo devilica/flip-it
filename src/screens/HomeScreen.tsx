@@ -9,6 +9,7 @@ import { FlipTutorial } from '@/components/tutorial/FlipTutorial';
 import { AppText } from '@/components/ui/AppText';
 import { GameButton } from '@/components/ui/GameButton';
 import { IconButton } from '@/components/ui/IconButton';
+import { LeaderboardButton } from '@/components/ui/LeaderboardButton';
 import { ProgressBar } from '@/components/ui/ProgressBar';
 import { Screen } from '@/components/ui/Screen';
 import { StarRow } from '@/components/ui/StarRow';
@@ -60,6 +61,7 @@ export function HomeScreen() {
               </AppText>
             </Pressable>
           </View>
+          <LeaderboardButton mode="flip-it" pulse size={40} />
           <IconButton
             icon="settings-sharp"
             accessibilityLabel={t('settings')}

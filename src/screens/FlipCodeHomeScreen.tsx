@@ -7,6 +7,7 @@ import Animated, { FadeInDown, FadeInUp } from 'react-native-reanimated';
 import { AppText } from '@/components/ui/AppText';
 import { GameButton } from '@/components/ui/GameButton';
 import { IconButton } from '@/components/ui/IconButton';
+import { LeaderboardButton } from '@/components/ui/LeaderboardButton';
 import { Screen } from '@/components/ui/Screen';
 import { canSaveDailyStreak, flipCodeDateKey } from '@/flip-code/daily';
 import { CODE_MASCOTS } from '@/flip-code/mascots';
@@ -76,6 +77,7 @@ export function FlipCodeHomeScreen() {
               </AppText>
             </View>
           </View>
+          <LeaderboardButton mode="flip-code" pulse size={40} />
           <IconButton
             icon="settings-sharp"
             accessibilityLabel={t('settings')}

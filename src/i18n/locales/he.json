@@ -162,5 +162,20 @@
   "resetBody": "פעולה זו מוחקת את כל השלבים שנפתרו, הכוכבים, התוצאות הטובות ביותר והתוצאות היומיות. ההגדרות נשמרות. אי אפשר לבטל.",
   "cancel": "ביטול",
   "reset": "איפוס",
-  "footer": "FLIP IT! 1.0 · פועל לגמרי לא מקוון · ההתקדמות נשמרת במכשיר הזה"
+  "legal": "משפטי",
+  "privacyPolicy": "מדיניות פרטיות",
+  "termsOfUse": "תנאי שימוש",
+  "footer": "FLIP IT! 1.0 · פועל לגמרי לא מקוון · ההתקדמות נשמרת במכשיר הזה",
+  "flipName": "FLIP IT!",
+  "leaderboards": "לוחות מובילים",
+  "dailyRank": "היום",
+  "weeklyRank": "השבוע",
+  "allTimeRank": "כל הזמנים",
+  "yourRank": "הדירוג שלך",
+  "signInForRanks": "התחברו ל-Play Games כדי לראות את הדירוג העולמי.",
+  "signInPlayGames": "כניסה",
+  "playGamesUnavailable": "Play Games פועל באפליקציה המותקנת, לא ב-Expo Go.",
+  "leaderboardEmpty": "אין עדיין תוצאות לתקופה הזו.",
+  "leaderboardFailed": "לא ניתן לטעון את הדירוג.",
+  "openPlayGames": "פתיחה ב-Play Games"
 }

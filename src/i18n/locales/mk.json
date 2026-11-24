@@ -162,5 +162,20 @@
   "resetBody": "Ова ги брише сите решени нивоа, ѕвезди, најдобри резултати и дневни резултати. Поставките остануваат. Ова не може да се врати.",
   "cancel": "Откажи",
   "reset": "Нулирај",
-  "footer": "FLIP IT! 1.0 · Игра целосно без мрежа · Напредокот се чува на овој уред"
+  "legal": "Правно",
+  "privacyPolicy": "Политика за приватност",
+  "termsOfUse": "Услови за користење",
+  "footer": "FLIP IT! 1.0 · Игра целосно без мрежа · Напредокот се чува на овој уред",
+  "flipName": "FLIP IT!",
+  "leaderboards": "Ранг-листи",
+  "dailyRank": "Денес",
+  "weeklyRank": "Оваа недела",
+  "allTimeRank": "На сите времиња",
+  "yourRank": "Твојот ранг",
+  "signInForRanks": "Најави се со Play Games за да ја видиш светската ранг-листа.",
+  "signInPlayGames": "Најава",
+  "playGamesUnavailable": "Play Games работи во инсталираната апликација, не во Expo Go.",
+  "leaderboardEmpty": "Сè уште нема резултати за овој период.",
+  "leaderboardFailed": "Ранг-листата не се вчита.",
+  "openPlayGames": "Отвори во Play Games"
 }

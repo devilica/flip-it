@@ -1,6 +1,8 @@
 import Constants, { ExecutionEnvironment } from 'expo-constants';
 import type { InterstitialAd, RewardedAd } from 'react-native-google-mobile-ads';
 
+import { storage } from '@/services/storage';
+
 /** Expo Go has no Google Mobile Ads native module. The dev build and release app do. */
 export const isExpoGo = Constants.executionEnvironment === ExecutionEnvironment.StoreClient;
 
@@ -228,4 +230,33 @@ export async function showLevelInterstitial(levelNumber: number): Promise<void> 
     return;
   }
   await levelInterstitial.showIfLoaded();
+}
+
+const LEADERBOARD_OPENS_KEY = 'leaderboard-opens';
+let leaderboardOpens: Promise<void> = Promise.resolve();
+
+async function recordLeaderboardOpen(): Promise<void> {
+  if (!ads) return;
+  try {
+    const raw = await storage.getItem(LEADERBOARD_OPENS_KEY);
+    const parsed = Number(raw);
+    const count = Number.isInteger(parsed) && parsed > 0 ? parsed : 0;
+    const next = count + 1;
+    await storage.setItem(LEADERBOARD_OPENS_KEY, String(next));
+    if (next % INTERSTITIAL_EVERY !== 0) return;
+    await rewardedAds.prepare();
+    await levelInterstitial.showIfLoaded();
+  } catch {
+    return;
+  }
+}
+
+/** Counts one visit to the leaderboards and shows an interstitial on every fifth visit. */
+export function showLeaderboardInterstitial(): Promise<void> {
+  const run = leaderboardOpens.then(recordLeaderboardOpen, recordLeaderboardOpen);
+  leaderboardOpens = run.then(
+    () => undefined,
+    () => undefined,
+  );
+  return run;
 }

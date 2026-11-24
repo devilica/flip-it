@@ -162,5 +162,20 @@
   "resetBody": "Scriosann sé seo gach leibhéal réitithe, na réaltaí, na torthaí is fearr agus na torthaí laethúla. Coimeádtar na socruithe. Ní féidir é seo a chur ar ceal.",
   "cancel": "Ná bac",
   "reset": "Athshocraigh",
-  "footer": "FLIP IT! 1.0 · Imrítear go hiomlán as líne · Sábháiltear an dul chun cinn ar an ngléas seo"
+  "legal": "Dlíthiúil",
+  "privacyPolicy": "Polasaí príobháideachais",
+  "termsOfUse": "Téarmaí úsáide",
+  "footer": "FLIP IT! 1.0 · Imrítear go hiomlán as líne · Sábháiltear an dul chun cinn ar an ngléas seo",
+  "flipName": "FLIP IT!",
+  "leaderboards": "Cláir cheannais",
+  "dailyRank": "Inniu",
+  "weeklyRank": "An tseachtain seo",
+  "allTimeRank": "Riamh",
+  "yourRank": "Do rang",
+  "signInForRanks": "Sínigh isteach le Play Games chun an rangú domhanda a fheiceáil.",
+  "signInPlayGames": "Sínigh isteach",
+  "playGamesUnavailable": "Oibríonn Play Games san aip suiteáilte, ní in Expo Go.",
+  "leaderboardEmpty": "Níl scór ar bith don tréimhse seo fós.",
+  "leaderboardFailed": "Níorbh fhéidir an rangú a lódáil.",
+  "openPlayGames": "Oscail i Play Games"
 }

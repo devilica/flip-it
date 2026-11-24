@@ -4,42 +4,27 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>FLIP IT!</title>
-  <style>
-    :root { color-scheme: dark; }
-    body {
-      margin: 0;
-      font-family: Georgia, "Times New Roman", serif;
-      background: #101426;
-      color: #f4f6fb;
-      line-height: 1.6;
-    }
-    main { max-width: 40rem; margin: 0 auto; padding: 2rem 1.25rem 3rem; }
-    h1 { font-family: "Segoe UI", sans-serif; font-size: 2rem; margin-bottom: 0.25rem; }
-    p, li { font-size: 1.05rem; }
-    a { color: #38bdf8; }
-    .meta { color: #c9d0e6; }
-    nav { display: flex; flex-direction: column; gap: 0.75rem; margin-top: 1.5rem; }
-    nav a {
-      display: block;
-      padding: 0.9rem 1rem;
-      border-radius: 0.75rem;
-      background: #1b2140;
-      text-decoration: none;
-      font-family: "Segoe UI", sans-serif;
-      font-weight: 600;
-    }
-  </style>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="site.css">
 </head>
-<body>
+<body class="home">
   <main>
-    <h1>FLIP IT!</h1>
-    <p class="meta">Android puzzle game · package com.flipit.puzzle · published by Galasoft M.G.</p>
-    <p>FLIP IT! is a free, offline puzzle. Tap a tile to flip it and its neighbors, and match every color. These pages explain how the game handles information and the terms for playing it.</p>
-    <nav>
+    <p class="meta">Galasoft M.G.</p>
+    <h1 class="brand">FLIP IT!</h1>
+    <p>A free offline puzzle. Tap a tile to flip it and its neighbors, and match every color. Flip Sudoku and Flip Code are in the same app.</p>
+    <div class="shots">
+      <img src="preview/choose-a-game.jpg" alt="Choose a game" width="148">
+      <img src="preview/flip-it-level.jpg" alt="Flip It puzzle" width="148">
+      <img src="preview/flip-sudoku-level.jpg" alt="Flip Sudoku puzzle" width="148">
+      <img src="preview/flip-code-play.jpg" alt="Flip Code puzzle" width="148">
+    </div>
+    <nav class="actions">
       <a href="privacy/">Privacy policy</a>
       <a href="terms/">Terms of use</a>
     </nav>
-    <p class="meta">Contact: <a href="mailto:milicagalasoft@gmail.com">milicagalasoft@gmail.com</a></p>
+    <p class="meta">Android · com.flipit.puzzle<br>Contact: <a href="mailto:milicagalasoft@gmail.com">milicagalasoft@gmail.com</a></p>
   </main>
 </body>
 </html>

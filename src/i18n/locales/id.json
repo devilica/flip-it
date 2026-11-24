@@ -162,5 +162,20 @@
   "resetBody": "Ini menghapus semua tingkat yang selesai, bintang, skor terbaik, dan hasil harian. Pengaturan tetap ada. Ini tidak bisa dibatalkan.",
   "cancel": "Batal",
   "reset": "Atur ulang",
-  "footer": "FLIP IT! 1.0 · Bisa dimainkan sepenuhnya luring · Kemajuan tersimpan di perangkat ini"
+  "legal": "Hukum",
+  "privacyPolicy": "Kebijakan privasi",
+  "termsOfUse": "Ketentuan penggunaan",
+  "footer": "FLIP IT! 1.0 · Bisa dimainkan sepenuhnya luring · Kemajuan tersimpan di perangkat ini",
+  "flipName": "FLIP IT!",
+  "leaderboards": "Papan peringkat",
+  "dailyRank": "Harian",
+  "weeklyRank": "Mingguan",
+  "allTimeRank": "Sepanjang waktu",
+  "yourRank": "Peringkatmu",
+  "signInForRanks": "Masuk dengan Play Games untuk melihat peringkat dunia.",
+  "signInPlayGames": "Masuk",
+  "playGamesUnavailable": "Play Games berjalan di aplikasi terpasang, bukan di Expo Go.",
+  "leaderboardEmpty": "Belum ada skor untuk periode ini.",
+  "leaderboardFailed": "Peringkat tidak dapat dimuat.",
+  "openPlayGames": "Buka di Play Games"
 }

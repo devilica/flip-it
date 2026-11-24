@@ -26,6 +26,7 @@ import type { LevelDef } from '@/game/types';
 import { useSquareLayout } from '@/hooks/useSquareLayout';
 import { useTheme } from '@/hooks/useTheme';
 import { useI18n } from '@/i18n';
+import { submitScore } from '@/play-games/service';
 import { showLevelInterstitial } from '@/services/ads';
 import { feedback } from '@/services/feedback';
 import {
@@ -37,6 +38,7 @@ import {
   useGameStore,
   type GameMode,
 } from '@/store/gameStore';
+import { totalStars } from '@/store/progressModel';
 import { useProgressStore } from '@/store/progressStore';
 import { spacing } from '@/theme';
 
@@ -141,7 +143,10 @@ export function GameScreen({ mode, levelNumber = 1, resume = false }: GameScreen
       feedback('win', 'success');
       const { history: played, earnedStars: stars } = useGameStore.getState();
       if (mode === 'daily') progress.recordDailyWin(dateKey, played.length, stars);
-      else progress.recordLevelWin(level.number, played.length, stars);
+      else {
+        progress.recordLevelWin(level.number, played.length, stars);
+        submitScore('flip-it', totalStars(useProgressStore.getState())).catch(() => {});
+      }
     } else if (status === 'failed') {
       feedback('fail', 'warning');
       shake.value = withSequence(

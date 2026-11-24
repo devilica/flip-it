@@ -162,5 +162,20 @@
   "resetBody": "See kustutab kõik lahendatud tasemed, tähed, parimad tulemused ja päevased tulemused. Sätted jäävad alles. Seda ei saa tagasi võtta.",
   "cancel": "Tühista",
   "reset": "Lähtesta",
-  "footer": "FLIP IT! 1.0 · Mäng töötab täiesti võrguühenduseta · Edenemine salvestatakse sellesse seadmesse"
+  "legal": "Õiguslik",
+  "privacyPolicy": "Privaatsuspoliitika",
+  "termsOfUse": "Kasutustingimused",
+  "footer": "FLIP IT! 1.0 · Mäng töötab täiesti võrguühenduseta · Edenemine salvestatakse sellesse seadmesse",
+  "flipName": "FLIP IT!",
+  "leaderboards": "Edetabelid",
+  "dailyRank": "Täna",
+  "weeklyRank": "Sel nädalal",
+  "allTimeRank": "Kogu aeg",
+  "yourRank": "Sinu koht",
+  "signInForRanks": "Logi Play Gamesiga sisse, et näha maailma edetabelit.",
+  "signInPlayGames": "Logi sisse",
+  "playGamesUnavailable": "Play Games töötab paigaldatud rakenduses, mitte Expo Gos.",
+  "leaderboardEmpty": "Selle perioodi tulemusi veel pole.",
+  "leaderboardFailed": "Edetabelit ei õnnestunud laadida.",
+  "openPlayGames": "Ava Play Gamesis"
 }

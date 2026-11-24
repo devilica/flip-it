@@ -162,5 +162,20 @@
   "resetBody": "Das löscht alle gelösten Level, Sterne, Bestwerte und Tagesergebnisse. Die Einstellungen bleiben. Das lässt sich nicht rückgängig machen.",
   "cancel": "Abbrechen",
   "reset": "Zurücksetzen",
-  "footer": "FLIP IT! 1.0 · Läuft komplett offline · Fortschritt bleibt auf diesem Gerät"
+  "legal": "Rechtliches",
+  "privacyPolicy": "Datenschutzerklärung",
+  "termsOfUse": "Nutzungsbedingungen",
+  "footer": "FLIP IT! 1.0 · Läuft komplett offline · Fortschritt bleibt auf diesem Gerät",
+  "flipName": "FLIP IT!",
+  "leaderboards": "Bestenlisten",
+  "dailyRank": "Heute",
+  "weeklyRank": "Diese Woche",
+  "allTimeRank": "Gesamte Zeit",
+  "yourRank": "Dein Rang",
+  "signInForRanks": "Melde dich mit Play Games an, um die Weltrangliste zu sehen.",
+  "signInPlayGames": "Anmelden",
+  "playGamesUnavailable": "Play Games läuft in der installierten App, nicht in Expo Go.",
+  "leaderboardEmpty": "Für diesen Zeitraum gibt es noch keine Ergebnisse.",
+  "leaderboardFailed": "Die Rangliste konnte nicht geladen werden.",
+  "openPlayGames": "In Play Games öffnen"
 }

@@ -162,5 +162,20 @@
   "resetBody": "解いたレベル、星、最高記録、毎日の結果がすべて削除されます。設定は残ります。元に戻せません。",
   "cancel": "キャンセル",
   "reset": "リセット",
-  "footer": "FLIP IT! 1.0 · 完全オフラインで遊べます · 進行状況はこの端末に保存されます"
+  "legal": "法的情報",
+  "privacyPolicy": "プライバシーポリシー",
+  "termsOfUse": "利用規約",
+  "footer": "FLIP IT! 1.0 · 完全オフラインで遊べます · 進行状況はこの端末に保存されます",
+  "flipName": "FLIP IT!",
+  "leaderboards": "ランキング",
+  "dailyRank": "本日",
+  "weeklyRank": "今週",
+  "allTimeRank": "歴代",
+  "yourRank": "あなたの順位",
+  "signInForRanks": "世界ランキングを見るには Play Games にサインインして。",
+  "signInPlayGames": "サインイン",
+  "playGamesUnavailable": "Play Games はインストールしたアプリで動きます。Expo Go では動きません。",
+  "leaderboardEmpty": "この期間のスコアはまだありません。",
+  "leaderboardFailed": "ランキングを読み込めませんでした。",
+  "openPlayGames": "Play Games で開く"
 }

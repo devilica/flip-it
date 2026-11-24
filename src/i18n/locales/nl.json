@@ -162,5 +162,20 @@
   "resetBody": "Dit wist alle opgeloste levels, sterren, records en dagresultaten. Instellingen blijven bewaard. Dit kan niet ongedaan worden gemaakt.",
   "cancel": "Annuleren",
   "reset": "Wissen",
-  "footer": "FLIP IT! 1.0 · Speelt volledig offline · Voortgang blijft op dit apparaat"
+  "legal": "Juridisch",
+  "privacyPolicy": "Privacybeleid",
+  "termsOfUse": "Gebruiksvoorwaarden",
+  "footer": "FLIP IT! 1.0 · Speelt volledig offline · Voortgang blijft op dit apparaat",
+  "flipName": "FLIP IT!",
+  "leaderboards": "Ranglijsten",
+  "dailyRank": "Vandaag",
+  "weeklyRank": "Deze week",
+  "allTimeRank": "Allertijden",
+  "yourRank": "Jouw plek",
+  "signInForRanks": "Log in met Play Games om de wereldranglijst te zien.",
+  "signInPlayGames": "Inloggen",
+  "playGamesUnavailable": "Play Games werkt in de geïnstalleerde app, niet in Expo Go.",
+  "leaderboardEmpty": "Nog geen scores voor deze periode.",
+  "leaderboardFailed": "De ranglijst kon niet worden geladen.",
+  "openPlayGames": "Openen in Play Games"
 }

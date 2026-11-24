@@ -162,5 +162,20 @@
   "resetBody": "Ini memadam semua peringkat yang selesai, bintang, markah terbaik dan hasil harian. Tetapan dikekalkan. Tindakan ini tidak boleh dibuat asal.",
   "cancel": "Batal",
   "reset": "Tetapkan semula",
-  "footer": "FLIP IT! 1.0 · Boleh dimainkan sepenuhnya luar talian · Kemajuan disimpan pada peranti ini"
+  "legal": "Undang-undang",
+  "privacyPolicy": "Dasar privasi",
+  "termsOfUse": "Terma penggunaan",
+  "footer": "FLIP IT! 1.0 · Boleh dimainkan sepenuhnya luar talian · Kemajuan disimpan pada peranti ini",
+  "flipName": "FLIP IT!",
+  "leaderboards": "Papan kedudukan",
+  "dailyRank": "Harian",
+  "weeklyRank": "Mingguan",
+  "allTimeRank": "Sepanjang masa",
+  "yourRank": "Kedudukan anda",
+  "signInForRanks": "Log masuk dengan Play Games untuk lihat kedudukan dunia.",
+  "signInPlayGames": "Log masuk",
+  "playGamesUnavailable": "Play Games berjalan pada apl yang dipasang, bukan Expo Go.",
+  "leaderboardEmpty": "Belum ada markah untuk tempoh ini.",
+  "leaderboardFailed": "Kedudukan tidak dapat dimuatkan.",
+  "openPlayGames": "Buka dalam Play Games"
 }

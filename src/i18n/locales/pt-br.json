@@ -162,5 +162,20 @@
   "resetBody": "Isso apaga todos os níveis resolvidos, as estrelas, os recordes e os resultados diários. As configurações ficam. Não dá para desfazer.",
   "cancel": "Cancelar",
   "reset": "Redefinir",
-  "footer": "FLIP IT! 1.0 · Joga totalmente offline · O progresso fica salvo neste aparelho"
+  "legal": "Legal",
+  "privacyPolicy": "Política de privacidade",
+  "termsOfUse": "Termos de uso",
+  "footer": "FLIP IT! 1.0 · Joga totalmente offline · O progresso fica salvo neste aparelho",
+  "flipName": "FLIP IT!",
+  "leaderboards": "Classificações",
+  "dailyRank": "Hoje",
+  "weeklyRank": "Esta semana",
+  "allTimeRank": "Geral",
+  "yourRank": "Sua posição",
+  "signInForRanks": "Entre com o Play Games para ver o ranking mundial.",
+  "signInPlayGames": "Entrar",
+  "playGamesUnavailable": "O Play Games funciona no aplicativo instalado, não no Expo Go.",
+  "leaderboardEmpty": "Ainda não há pontuações neste período.",
+  "leaderboardFailed": "Não foi possível carregar a classificação.",
+  "openPlayGames": "Abrir no Play Games"
 }

@@ -9,6 +9,7 @@ import { SudokuRulesCard } from '@/components/sudoku/SudokuRulesCard';
 import { AppText } from '@/components/ui/AppText';
 import { GameButton } from '@/components/ui/GameButton';
 import { IconButton } from '@/components/ui/IconButton';
+import { LeaderboardButton } from '@/components/ui/LeaderboardButton';
 import { Screen } from '@/components/ui/Screen';
 import { useTheme } from '@/hooks/useTheme';
 import { useI18n } from '@/i18n';
@@ -53,6 +54,7 @@ export function SudokuHomeScreen() {
               </AppText>
             </Pressable>
           </View>
+          <LeaderboardButton mode="flip-sudoku" pulse size={40} />
           <IconButton
             icon="settings-sharp"
             accessibilityLabel={t('settings')}

@@ -162,5 +162,20 @@
   "resetBody": "Kjo fshin të gjitha nivelet e zgjidhura, yjet, rezultatet më të mira dhe rezultatet ditore. Cilësimet ruhen. Kjo nuk zhbëhet.",
   "cancel": "Anulo",
   "reset": "Rivendos",
-  "footer": "FLIP IT! 1.0 · Luhet plotësisht jashtë linje · Ecuria ruhet në këtë pajisje"
+  "legal": "Ligjore",
+  "privacyPolicy": "Politika e privatësisë",
+  "termsOfUse": "Kushtet e përdorimit",
+  "footer": "FLIP IT! 1.0 · Luhet plotësisht jashtë linje · Ecuria ruhet në këtë pajisje",
+  "flipName": "FLIP IT!",
+  "leaderboards": "Renditjet",
+  "dailyRank": "Sot",
+  "weeklyRank": "Këtë javë",
+  "allTimeRank": "I të gjitha kohërave",
+  "yourRank": "Vendi yt",
+  "signInForRanks": "Hyr me Play Games që të shohësh renditjen botërore.",
+  "signInPlayGames": "Hyr",
+  "playGamesUnavailable": "Play Games punon te aplikacioni i instaluar, jo te Expo Go.",
+  "leaderboardEmpty": "Ende nuk ka rezultate për këtë periudhë.",
+  "leaderboardFailed": "Renditja nuk u ngarkua.",
+  "openPlayGames": "Hape në Play Games"
 }

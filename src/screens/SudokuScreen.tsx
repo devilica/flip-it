@@ -16,6 +16,7 @@ import { OverlayPanel } from '@/components/ui/OverlayPanel';
 import { Screen } from '@/components/ui/Screen';
 import { useSquareLayout } from '@/hooks/useSquareLayout';
 import { useI18n } from '@/i18n';
+import { submitScore } from '@/play-games/service';
 import { rewardedAds, showLevelInterstitial } from '@/services/ads';
 import { feedback } from '@/services/feedback';
 import { getDailySudoku, sudokuDateKey } from '@/sudoku/daily';
@@ -99,7 +100,11 @@ export function SudokuScreen({ levelNumber, daily = false }: SudokuScreenProps) 
     recorded.current = true;
     feedback('win', 'success');
     if (daily) clearDaily(sudokuDateKey(new Date()));
-    else recordWin(level.id, stars, session.lightbulbsUsed);
+    else {
+      recordWin(level.id, stars, session.lightbulbsUsed);
+      const total = Object.values(useSudokuStore.getState().stars).reduce((sum, value) => sum + value, 0);
+      submitScore('flip-sudoku', total).catch(() => {});
+    }
   }, [clearDaily, daily, level.id, recordWin, session.lightbulbsUsed, stars, won]);
 
   // Android back: close a help or hint modal, otherwise pause, then resume.

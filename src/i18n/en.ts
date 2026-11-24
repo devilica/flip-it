@@ -1,7 +1,19 @@
 /** English source. Every other locale uses these same keys. */
 export const en = {
   chooseGame: 'Choose a game',
+  flipName: 'FLIP IT!',
   settings: 'Settings',
+  leaderboards: 'Leaderboards',
+  dailyRank: 'Daily',
+  weeklyRank: 'Weekly',
+  allTimeRank: 'All-time',
+  yourRank: 'Your rank',
+  signInForRanks: 'Sign in with Play Games to see the world ranking.',
+  signInPlayGames: 'Sign in',
+  playGamesUnavailable: 'Play Games needs the installed app, not Expo Go.',
+  leaderboardEmpty: 'No scores for this period yet.',
+  leaderboardFailed: 'Could not load the ranking.',
+  openPlayGames: 'Open in Play Games',
   allGames: 'All games',
   back: 'Back',
   flipTagline: 'Tap to flip. Make every tile match.',
@@ -168,6 +180,9 @@ export const en = {
     'This deletes all solved levels, stars, best scores and daily results. Settings are kept. This cannot be undone.',
   cancel: 'Cancel',
   reset: 'Reset',
+  legal: 'Legal',
+  privacyPolicy: 'Privacy policy',
+  termsOfUse: 'Terms of use',
   footer: 'FLIP IT! 1.0 · Plays fully offline · Progress is saved on this device',
 } as const;
 

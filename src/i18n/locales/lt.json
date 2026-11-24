@@ -162,5 +162,20 @@
   "resetBody": "Bus ištrinti visi išspręsti lygiai, žvaigždutės, geriausi rezultatai ir dienos rezultatai. Nustatymai lieka. To negalima atšaukti.",
   "cancel": "Atšaukti",
   "reset": "Atstatyti",
-  "footer": "FLIP IT! 1.0 · Žaidžiama visiškai be interneto · Pažanga saugoma šiame įrenginyje"
+  "legal": "Teisinė informacija",
+  "privacyPolicy": "Privatumo politika",
+  "termsOfUse": "Naudojimo sąlygos",
+  "footer": "FLIP IT! 1.0 · Žaidžiama visiškai be interneto · Pažanga saugoma šiame įrenginyje",
+  "flipName": "FLIP IT!",
+  "leaderboards": "Lyderių lentelės",
+  "dailyRank": "Šiandien",
+  "weeklyRank": "Šią savaitę",
+  "allTimeRank": "Visų laikų",
+  "yourRank": "Tavo vieta",
+  "signInForRanks": "Prisijunk per Play Games ir matyk pasaulio lentelę.",
+  "signInPlayGames": "Prisijungti",
+  "playGamesUnavailable": "Play Games veikia įdiegtoje programoje, ne Expo Go.",
+  "leaderboardEmpty": "Šiam laikotarpiui rezultatų dar nėra.",
+  "leaderboardFailed": "Nepavyko įkelti lentelės.",
+  "openPlayGames": "Atidaryti Play Games"
 }

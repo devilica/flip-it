@@ -17,6 +17,7 @@ import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 
 import { prefetchLevels } from '@/game/levels';
+import { connectPlayGames } from '@/play-games/service';
 import { useSettingsSync } from '@/hooks/useSettingsSync';
 import { prepareRewardedAds } from '@/services/ads';
 import { useTheme } from '@/hooks/useTheme';
@@ -60,6 +61,7 @@ export default function RootLayout() {
   useEffect(() => {
     if (!ready) return;
     prepareRewardedAds().catch(() => {});
+    connectPlayGames().catch(() => {});
   }, [ready]);
 
   // Warm the level cache in the background so high levels open instantly.
@@ -97,6 +99,7 @@ export default function RootLayout() {
           <Stack.Screen name="daily" options={{ animation: 'slide_from_right' }} />
           <Stack.Screen name="levels" options={{ animation: 'slide_from_bottom' }} />
           <Stack.Screen name="settings" options={{ animation: 'slide_from_right' }} />
+          <Stack.Screen name="leaderboards" options={{ animation: 'slide_from_right' }} />
         </Stack>
       </SafeAreaProvider>
     </GestureHandlerRootView>

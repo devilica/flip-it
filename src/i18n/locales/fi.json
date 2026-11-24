@@ -162,5 +162,20 @@
   "resetBody": "Tämä poistaa kaikki ratkaistut tasot, tähdet, parhaat tulokset ja päivän tulokset. Asetukset säilyvät. Tätä ei voi perua.",
   "cancel": "Peruuta",
   "reset": "Nollaa",
-  "footer": "FLIP IT! 1.0 · Peli toimii täysin ilman verkkoa · Edistyminen tallennetaan tälle laitteelle"
+  "legal": "Oikeudelliset tiedot",
+  "privacyPolicy": "Tietosuojakäytäntö",
+  "termsOfUse": "Käyttöehdot",
+  "footer": "FLIP IT! 1.0 · Peli toimii täysin ilman verkkoa · Edistyminen tallennetaan tälle laitteelle",
+  "flipName": "FLIP IT!",
+  "leaderboards": "Tulostaulut",
+  "dailyRank": "Tänään",
+  "weeklyRank": "Tällä viikolla",
+  "allTimeRank": "Kaikki ajat",
+  "yourRank": "Sijasi",
+  "signInForRanks": "Kirjaudu Play Gamesiin nähdäksesi maailmanlistan.",
+  "signInPlayGames": "Kirjaudu",
+  "playGamesUnavailable": "Play Games toimii asennetussa sovelluksessa, ei Expo Gossa.",
+  "leaderboardEmpty": "Tältä ajanjaksolta ei ole vielä tuloksia.",
+  "leaderboardFailed": "Tulostaulua ei voitu ladata.",
+  "openPlayGames": "Avaa Play Gamesissa"
 }

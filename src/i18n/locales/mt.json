@@ -162,5 +162,20 @@
   "resetBody": "Dan iħassar il-livelli solvuti kollha, l-istilel, l-aħjar riżultati u r-riżultati ta’ kuljum. L-għażliet jinżammu. Dan ma jerġax lura.",
   "cancel": "Ikkanċella",
   "reset": "Neħħi",
-  "footer": "FLIP IT! 1.0 · Jilgħab għalkollox bla internet · L-avvanz jinħażen fuq dan l-apparat"
+  "legal": "Legali",
+  "privacyPolicy": "Politika tal-privatezza",
+  "termsOfUse": "Termini tal-użu",
+  "footer": "FLIP IT! 1.0 · Jilgħab għalkollox bla internet · L-avvanz jinħażen fuq dan l-apparat",
+  "flipName": "FLIP IT!",
+  "leaderboards": "Klassifiki",
+  "dailyRank": "Illum",
+  "weeklyRank": "Din il-ġimgħa",
+  "allTimeRank": "Ta' kull żmien",
+  "yourRank": "Ir-rank tiegħek",
+  "signInForRanks": "Idħol b'Play Games biex tara l-klassifika tad-dinja.",
+  "signInPlayGames": "Idħol",
+  "playGamesUnavailable": "Play Games jaħdem fl-app installata, mhux f'Expo Go.",
+  "leaderboardEmpty": "Għad m'hemmx riżultati għal dan il-perjodu.",
+  "leaderboardFailed": "Il-klassifika ma setgħetx titgħabba.",
+  "openPlayGames": "Iftaħ f'Play Games"
 }

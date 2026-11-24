@@ -162,5 +162,20 @@
   "resetBody": "푼 레벨, 별, 최고 점수, 일일 결과가 모두 삭제됩니다. 설정은 유지됩니다. 되돌릴 수 없습니다.",
   "cancel": "취소",
   "reset": "초기화",
-  "footer": "FLIP IT! 1.0 · 완전히 오프라인으로 플레이 · 진행 상황은 이 기기에 저장됩니다"
+  "legal": "법적 고지",
+  "privacyPolicy": "개인정보 처리방침",
+  "termsOfUse": "이용 약관",
+  "footer": "FLIP IT! 1.0 · 완전히 오프라인으로 플레이 · 진행 상황은 이 기기에 저장됩니다",
+  "flipName": "FLIP IT!",
+  "leaderboards": "순위표",
+  "dailyRank": "오늘",
+  "weeklyRank": "이번 주",
+  "allTimeRank": "전체",
+  "yourRank": "내 순위",
+  "signInForRanks": "세계 순위를 보려면 Play Games에 로그인하세요.",
+  "signInPlayGames": "로그인",
+  "playGamesUnavailable": "Play Games는 설치된 앱에서 동작하며 Expo Go에서는 동작하지 않습니다.",
+  "leaderboardEmpty": "이 기간의 점수가 아직 없습니다.",
+  "leaderboardFailed": "순위를 불러오지 못했습니다.",
+  "openPlayGames": "Play Games에서 열기"
 }

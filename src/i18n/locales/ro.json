@@ -162,5 +162,20 @@
   "resetBody": "Se șterg toate nivelurile rezolvate, stelele, cele mai bune scoruri și rezultatele zilnice. Setările rămân. Acțiunea nu poate fi anulată.",
   "cancel": "Renunță",
   "reset": "Resetează",
-  "footer": "FLIP IT! 1.0 · Se joacă complet fără internet · Progresul se salvează pe acest dispozitiv"
+  "legal": "Informații legale",
+  "privacyPolicy": "Politica de confidențialitate",
+  "termsOfUse": "Termeni de utilizare",
+  "footer": "FLIP IT! 1.0 · Se joacă complet fără internet · Progresul se salvează pe acest dispozitiv",
+  "flipName": "FLIP IT!",
+  "leaderboards": "Clasamente",
+  "dailyRank": "Azi",
+  "weeklyRank": "Săptămâna asta",
+  "allTimeRank": "Din toate timpurile",
+  "yourRank": "Locul tău",
+  "signInForRanks": "Conectează-te cu Play Games ca să vezi clasamentul mondial.",
+  "signInPlayGames": "Conectare",
+  "playGamesUnavailable": "Play Games merge în aplicația instalată, nu în Expo Go.",
+  "leaderboardEmpty": "Încă nu sunt scoruri pentru această perioadă.",
+  "leaderboardFailed": "Clasamentul nu a putut fi încărcat.",
+  "openPlayGames": "Deschide în Play Games"
 }

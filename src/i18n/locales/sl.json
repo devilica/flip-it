@@ -162,5 +162,20 @@
   "resetBody": "To izbriše vse rešene stopnje, zvezdice, najboljše rezultate in dnevne rezultate. Nastavitve ostanejo. Tega ni mogoče razveljaviti.",
   "cancel": "Prekliči",
   "reset": "Ponastavi",
-  "footer": "FLIP IT! 1.0 · Igra poteka povsem brez povezave · Napredek se shrani na tej napravi"
+  "legal": "Pravno",
+  "privacyPolicy": "Pravilnik o zasebnosti",
+  "termsOfUse": "Pogoji uporabe",
+  "footer": "FLIP IT! 1.0 · Igra poteka povsem brez povezave · Napredek se shrani na tej napravi",
+  "flipName": "FLIP IT!",
+  "leaderboards": "Lestvice",
+  "dailyRank": "Danes",
+  "weeklyRank": "Ta teden",
+  "allTimeRank": "Vse čase",
+  "yourRank": "Tvoje mesto",
+  "signInForRanks": "Prijavi se z Play Games in poglej svetovno lestvico.",
+  "signInPlayGames": "Prijava",
+  "playGamesUnavailable": "Play Games deluje v nameščeni aplikaciji, ne v Expo Go.",
+  "leaderboardEmpty": "Za to obdobje še ni rezultatov.",
+  "leaderboardFailed": "Lestvice ni bilo mogoče naložiti.",
+  "openPlayGames": "Odpri v Play Games"
 }

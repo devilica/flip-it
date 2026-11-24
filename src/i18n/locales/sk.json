@@ -162,5 +162,20 @@
   "resetBody": "Zmaže to všetky vyriešené úrovne, hviezdy, rekordy a denné výsledky. Nastavenia ostanú. Nedá sa to vrátiť.",
   "cancel": "Zrušiť",
   "reset": "Vymazať",
-  "footer": "FLIP IT! 1.0 · Hrá sa celé offline · Postup ostáva v tomto zariadení"
+  "legal": "Právne informácie",
+  "privacyPolicy": "Zásady ochrany súkromia",
+  "termsOfUse": "Podmienky používania",
+  "footer": "FLIP IT! 1.0 · Hrá sa celé offline · Postup ostáva v tomto zariadení",
+  "flipName": "FLIP IT!",
+  "leaderboards": "Rebríčky",
+  "dailyRank": "Dnes",
+  "weeklyRank": "Tento týždeň",
+  "allTimeRank": "Celkovo",
+  "yourRank": "Tvoje miesto",
+  "signInForRanks": "Prihlás sa cez Play Games a uvidíš svetový rebríček.",
+  "signInPlayGames": "Prihlásiť sa",
+  "playGamesUnavailable": "Play Games funguje v nainštalovanej aplikácii, nie v Expo Go.",
+  "leaderboardEmpty": "Za toto obdobie zatiaľ nie sú žiadne výsledky.",
+  "leaderboardFailed": "Rebríček sa nepodarilo načítať.",
+  "openPlayGames": "Otvoriť v Play Games"
 }

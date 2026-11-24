@@ -5,6 +5,7 @@ import { LogoMark } from '@/components/home/LogoMark';
 import { FlipMascot } from '@/components/mascot/FlipMascot';
 import { AppText } from '@/components/ui/AppText';
 import { IconButton } from '@/components/ui/IconButton';
+import { LeaderboardButton } from '@/components/ui/LeaderboardButton';
 import { Screen } from '@/components/ui/Screen';
 import { CODE_MASCOTS } from '@/flip-code/mascots';
 import { useTheme } from '@/hooks/useTheme';
@@ -22,7 +23,10 @@ export function ModeSelectScreen() {
         <AppText size={28} weight="bold">
           {t('chooseGame')}
         </AppText>
-        <IconButton icon="settings-sharp" accessibilityLabel={t('settings')} onPress={() => router.push('/settings')} size={44} soft />
+        <View style={styles.actions}>
+          <LeaderboardButton size={44} />
+          <IconButton icon="settings-sharp" accessibilityLabel={t('settings')} onPress={() => router.push('/settings')} size={44} soft />
+        </View>
       </View>
       <ScrollView style={styles.scroll} contentContainerStyle={styles.cards} showsVerticalScrollIndicator={false}>
         <Pressable
@@ -42,8 +46,8 @@ export function ModeSelectScreen() {
           onPress={() => router.push('/sudoku')}
           style={[styles.card, { backgroundColor: theme.surfaceStrong }]}
         >
-          <FlipMascot state="idle" size={72} />
-          <AppText size={22} weight="bold" align="center">
+          <FlipMascot state="idle" size={58} />
+          <AppText size={20} weight="bold" align="center">
             {t('sudokuName')}
           </AppText>
           <AppText size={14} tone="muted" align="center">
@@ -61,7 +65,7 @@ export function ModeSelectScreen() {
               <Image key={mascot.id} source={mascot.source} style={styles.codeMascot} resizeMode="contain" />
             ))}
           </View>
-          <AppText size={22} weight="bold" align="center">
+          <AppText size={20} weight="bold" align="center">
             {t('codeName')}
           </AppText>
           <AppText size={14} tone="muted" align="center">
@@ -75,9 +79,18 @@ export function ModeSelectScreen() {
 
 const styles = StyleSheet.create({
   top: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' },
+  actions: { flexDirection: 'row', alignItems: 'center', gap: spacing.sm },
   scroll: { flex: 1 },
-  cards: { flexGrow: 1, justifyContent: 'center', gap: spacing.lg, paddingVertical: spacing.md },
-  card: { borderRadius: radius.xl, padding: spacing.lg, alignItems: 'center', gap: spacing.sm },
+  cards: { flexGrow: 1, gap: spacing.lg, paddingVertical: spacing.xl },
+  card: {
+    flex: 1,
+    minHeight: 164,
+    justifyContent: 'center',
+    borderRadius: radius.xl,
+    padding: spacing.lg,
+    alignItems: 'center',
+    gap: spacing.sm,
+  },
   codeRow: { flexDirection: 'row', gap: spacing.sm },
   codeMascot: { width: 56, height: 56 },
 });

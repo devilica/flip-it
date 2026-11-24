@@ -162,5 +162,20 @@
   "resetBody": "इससे सभी हल लेवल, सितारे, श्रेष्ठ अंक और रोज़ के परिणाम मिट जाएँगे। सेटिंग्स रहेंगी। इसे वापस नहीं किया जा सकता।",
   "cancel": "रद्द करें",
   "reset": "रीसेट",
-  "footer": "FLIP IT! 1.0 · पूरा ऑफलाइन चलता है · प्रगति इस डिवाइस पर सहेजी जाती है"
+  "legal": "कानूनी",
+  "privacyPolicy": "गोपनीयता नीति",
+  "termsOfUse": "उपयोग की शर्तें",
+  "footer": "FLIP IT! 1.0 · पूरा ऑफलाइन चलता है · प्रगति इस डिवाइस पर सहेजी जाती है",
+  "flipName": "FLIP IT!",
+  "leaderboards": "लीडरबोर्ड",
+  "dailyRank": "आज",
+  "weeklyRank": "इस सप्ताह",
+  "allTimeRank": "अब तक",
+  "yourRank": "तुम्हारी रैंक",
+  "signInForRanks": "दुनिया की रैंकिंग देखने के लिए Play Games में साइन इन करो।",
+  "signInPlayGames": "साइन इन",
+  "playGamesUnavailable": "Play Games इंस्टॉल किए ऐप में चलता है, Expo Go में नहीं।",
+  "leaderboardEmpty": "इस अवधि के लिए अभी कोई स्कोर नहीं है।",
+  "leaderboardFailed": "रैंकिंग लोड नहीं हो सकी।",
+  "openPlayGames": "Play Games में खोलो"
 }
