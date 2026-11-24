@@ -1,6 +1,15 @@
 import { applyTaps, minimumMoves } from '@/game/engine';
 import { getLevel } from '@/game/levels';
-import { BONUS_MOVES, HINTS_PER_LEVEL, TAP_LOCK_MS, useGameStore } from '../gameStore';
+import {
+  BONUS_MOVES,
+  BONUS_MOVES_EXTRA,
+  FREE_UNDOS,
+  HINTS_PER_AD,
+  HINTS_PER_LEVEL,
+  TAP_LOCK_MS,
+  UNDOS_PER_AD,
+  useGameStore,
+} from '../gameStore';
 
 const store = () => useGameStore.getState();
 /** Taps with a timestamp far enough apart that the animation lock never interferes. */
@@ -32,15 +41,14 @@ describe('game store', () => {
     expect(store().hintsLeft).toBe(HINTS_PER_LEVEL);
   });
 
-  it('gives short puzzles 3 hints and longer puzzles two fewer than the solution', () => {
+  it('gives every puzzle the same two hints', () => {
     store().start(getLevel(1), 'level');
-    expect(store().level!.par).toBeLessThanOrEqual(5);
     expect(store().hintsLeft).toBe(HINTS_PER_LEVEL);
 
     const long = getLevel(51);
     store().start(long, 'level');
     expect(long.par).toBeGreaterThan(5);
-    expect(store().hintsLeft).toBe(long.par - 2);
+    expect(store().hintsLeft).toBe(HINTS_PER_LEVEL);
   });
 
   it('counts only accepted taps', () => {
@@ -58,10 +66,36 @@ describe('game store', () => {
     tap(0);
     tap(4);
     expect(store().undo()).toBe(true);
+    expect(store().undosLeft).toBe(FREE_UNDOS - 1);
     expect(store().board!.cells).toEqual(applyTaps(level.board, [0]).cells);
     store().undo();
     expect(store().board!.cells).toEqual(level.board.cells);
     expect(store().undo()).toBe(false);
+  });
+
+  it('stops after three free undos until an ad grants two more', () => {
+    tap(0);
+    tap(1);
+    tap(2);
+    tap(3);
+    expect(store().undo()).toBe(true);
+    expect(store().undo()).toBe(true);
+    expect(store().undo()).toBe(true);
+    const stuck = store().board!.cells.slice();
+    expect(store().undosLeft).toBe(0);
+    expect(store().undo()).toBe(false);
+    expect(store().board!.cells).toEqual(stuck);
+
+    expect(store().grantUndos()).toBe(true);
+    expect(store().undosLeft).toBe(UNDOS_PER_AD);
+    expect(store().undo()).toBe(true);
+    expect(store().board!.cells).not.toEqual(stuck);
+  });
+
+  it('does not grant undos unless the level is being played', () => {
+    useGameStore.setState({ status: 'failed', undosLeft: 0 });
+    expect(store().grantUndos()).toBe(false);
+    expect(store().undosLeft).toBe(0);
   });
 
   it('undoes moves on three-color boards', () => {
@@ -76,10 +110,12 @@ describe('game store', () => {
   it('restarts to the original board', () => {
     tap(0);
     tap(1);
+    store().undo();
     store().restart();
     expect(store().board!.cells).toEqual(level.board.cells);
     expect(store().history).toHaveLength(0);
     expect(store().status).toBe('playing');
+    expect(store().undosLeft).toBe(FREE_UNDOS);
   });
 
   it('wins with three stars when solved optimally', () => {
@@ -113,7 +149,7 @@ describe('game store', () => {
     expect(store().requestHint()).toBeNull();
 
     expect(store().grantHints()).toBe(true);
-    expect(store().hintsLeft).toBe(HINTS_PER_LEVEL);
+    expect(store().hintsLeft).toBe(HINTS_PER_AD);
     expect(store().requestHint()).not.toBeNull();
   });
 
@@ -134,6 +170,9 @@ describe('game store', () => {
     expect(store().status).toBe('playing');
     expect(store().bonusMoves).toBe(BONUS_MOVES);
     while (store().status === 'playing') tap(waste);
+    expect(store().grantBonusMoves()).toBe(true);
+    expect(store().bonusMoves).toBe(BONUS_MOVES + BONUS_MOVES_EXTRA);
+    while (store().status === 'playing') tap(waste);
     expect(store().grantBonusMoves()).toBe(false);
   });
 
@@ -145,10 +184,11 @@ describe('game store', () => {
   });
 
   it('resumes a saved session', () => {
-    store().start(level, 'level', { history: [0, 4], hintsLeft: 1, bonusMoves: 0 });
+    store().start(level, 'level', { history: [0, 4], hintsLeft: 1, bonusMoves: 0, undosLeft: 1 });
     expect(store().history).toEqual([0, 4]);
     expect(store().board!.cells).toEqual(applyTaps(level.board, [0, 4]).cells);
     expect(store().hintsLeft).toBe(1);
+    expect(store().undosLeft).toBe(1);
     expect(minimumMoves(store().board!)).toBeLessThan(Infinity);
   });
 });

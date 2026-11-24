@@ -46,6 +46,55 @@ import uk from './locales/uk.json';
 import vi from './locales/vi.json';
 import zh from './locales/zh.json';
 
+/** Locale files as written, before English fills any missing key. */
+export const localeSources: Record<Exclude<Language, 'en'>, Partial<Messages>> = {
+  ar,
+  bg,
+  bn,
+  bs,
+  cs,
+  da,
+  de,
+  el,
+  es,
+  'es-mx': esMx,
+  et,
+  fi,
+  fr,
+  fa,
+  ga,
+  he,
+  hi,
+  hr,
+  hu,
+  id,
+  it,
+  ja,
+  ko,
+  lt,
+  lv,
+  mk,
+  ms,
+  mt,
+  nl,
+  pl,
+  pt,
+  'pt-br': ptBr,
+  ro,
+  ru,
+  sk,
+  sl,
+  sq,
+  'sr-cy': srCy,
+  sr,
+  sv,
+  th,
+  tr,
+  uk,
+  vi,
+  zh,
+};
+
 function pack(data: Partial<Messages>): Messages {
   const filled: Messages = { ...en };
   for (const key of Object.keys(en) as (keyof Messages)[]) {

@@ -20,6 +20,8 @@ import { palette, spacing } from '@/theme';
 
 interface FailOverlayProps {
   canUseBonus: boolean;
+  /** Moves the next rewarded ad adds. */
+  bonusMoves?: number;
   onRetry: () => void;
   onBonus: () => void;
   onHome: () => void;
@@ -52,7 +54,7 @@ function SadTile() {
   );
 }
 
-export function FailOverlay({ canUseBonus, onRetry, onBonus, onHome }: FailOverlayProps) {
+export function FailOverlay({ canUseBonus, bonusMoves = BONUS_MOVES, onRetry, onBonus, onHome }: FailOverlayProps) {
   const { t } = useI18n();
   const [loadingAd, setLoadingAd] = useState(false);
   const [adError, setAdError] = useState(false);
@@ -64,7 +66,12 @@ export function FailOverlay({ canUseBonus, onRetry, onBonus, onHome }: FailOverl
     [],
   );
 
+  const adsReady = rewardedAds.isAvailable();
   const watchAd = async () => {
+    if (!adsReady) {
+      onBonus();
+      return;
+    }
     setAdError(false);
     setLoadingAd(true);
     const rewarded = await rewardedAds.showRewarded();
@@ -81,20 +88,28 @@ export function FailOverlay({ canUseBonus, onRetry, onBonus, onHome }: FailOverl
         {t('outOfMoves')}
       </AppText>
       <AppText size={15} tone="muted" align="center">
-        {t('soClose')}
+        {canUseBonus ? t('watchShortAd') : t('soClose')}
       </AppText>
-      <GameButton label={t('tryAgain')} icon="refresh" size="lg" onPress={onRetry} style={styles.full} />
-      {canUseBonus && rewardedAds.isAvailable() ? (
+      {canUseBonus ? (
         <GameButton
-          label={loadingAd ? t('loadingAd') : t('bonusMoves', { n: BONUS_MOVES })}
+          label={loadingAd ? t('loadingAd') : t('bonusMoves', { n: bonusMoves })}
           caption={loadingAd ? t('videoReady') : t('watchShortAd')}
           icon="play-circle"
-          variant="secondary"
+          size="lg"
           onPress={watchAd}
           disabled={loadingAd}
           style={styles.full}
         />
       ) : null}
+      <GameButton
+        label={t('tryAgain')}
+        icon="refresh"
+        size={canUseBonus ? 'md' : 'lg'}
+        variant={canUseBonus ? 'secondary' : 'primary'}
+        onPress={onRetry}
+        disabled={loadingAd}
+        style={styles.full}
+      />
       {adError ? (
         <AppText size={13} tone="muted" align="center">
           {t('adNoMoves')}

@@ -3,8 +3,8 @@ import { SUDOKU_LEVELS } from '../levels';
 import { uniqueSolution } from '../solver';
 
 describe('Flip Sudoku levels', () => {
-  it('has two hundred puzzles with increasing boards', () => {
-    expect(SUDOKU_LEVELS).toHaveLength(200);
+  it('has four hundred puzzles with increasing boards', () => {
+    expect(SUDOKU_LEVELS).toHaveLength(400);
     const sizes = SUDOKU_LEVELS.map((level) => level.size);
     expect(sizes).toEqual([
       ...Array<number>(16).fill(4),
@@ -14,6 +14,9 @@ describe('Flip Sudoku levels', () => {
       ...Array<number>(40).fill(8),
       ...Array<number>(40).fill(9),
       ...Array<number>(20).fill(10),
+      ...Array<number>(40).fill(10),
+      ...Array<number>(80).fill(11),
+      ...Array<number>(80).fill(12),
     ]);
   });
 

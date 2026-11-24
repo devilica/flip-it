@@ -10,6 +10,7 @@ import {
   createDefaultProgress,
   CURRENT_SAVE_VERSION,
   migrateProgress,
+  openClearedEnding,
   type ProgressData,
   type SavedSession,
   type Settings,
@@ -76,10 +77,14 @@ export const useProgressStore = create<ProgressState>()(
       storage: createJSONStorage(() => storage),
       partialize: dataOf,
       migrate: (persisted, version) => migrateProgress(persisted, version),
-      merge: (persisted, current) => ({
-        ...current,
-        ...migrateProgress(persisted, CURRENT_SAVE_VERSION),
-      }),
+      merge: (persisted, current) => {
+        const saved = migrateProgress(persisted, CURRENT_SAVE_VERSION);
+        return {
+          ...current,
+          ...saved,
+          unlockedLevel: openClearedEnding(saved.unlockedLevel, saved.stars, 200, TOTAL_LEVELS),
+        };
+      },
     },
   ),
 );

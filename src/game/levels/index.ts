@@ -2,7 +2,7 @@ import { dailyConfig, generateLevel, levelConfig } from '../generator';
 import type { LevelDef } from '../types';
 
 /** Levels shown on the map. Generation is deterministic, so this can grow freely. */
-export const TOTAL_LEVELS = 200;
+export const TOTAL_LEVELS = 300;
 
 const SEED_PREFIX = 'flip-it-v1';
 

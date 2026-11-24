@@ -40,6 +40,7 @@ describe('level generation', () => {
     expect(levels.slice(10, 25).every((l) => l.board.size === 4)).toBe(true);
     expect(levels.slice(25, 50).every((l) => l.board.size === 5)).toBe(true);
     expect(levels.slice(50, 100).every((l) => l.board.size === 6)).toBe(true);
+    expect(levels.slice(200).every((l) => l.board.size === 6)).toBe(true);
   });
 
   it('is deterministic', () => {

@@ -19,6 +19,7 @@ import { useI18n } from '@/i18n';
 import { rewardedAds, showLevelInterstitial } from '@/services/ads';
 import { feedback } from '@/services/feedback';
 import { getDailySudoku, sudokuDateKey } from '@/sudoku/daily';
+import { differentOrientation, orientLevel } from '@/sudoku/orient';
 import { SUDOKU_LEVEL_COUNT, getSudokuLevel } from '@/sudoku/levels';
 import { emptyMarks, isGiven, mascotCells, matchesSolution, starsForLightbulbs } from '@/sudoku/rules';
 import { uniqueSolution } from '@/sudoku/solver';
@@ -31,23 +32,30 @@ interface SudokuScreenProps {
   daily?: boolean;
 }
 
-function freshSession(level: SudokuLevel, daily: boolean): SudokuSession {
+const SUDOKU_HINTS = 2;
+
+function freshSession(level: SudokuLevel, daily: boolean, orientation = 0): SudokuSession {
   return {
     levelNumber: daily ? 0 : level.id,
     marks: emptyMarks(level),
     magnifier: level.magnifier,
-    lightbulb: level.lightbulb,
+    lightbulb: SUDOKU_HINTS,
     eraser: level.eraser,
     lightbulbsUsed: 0,
     selected: null,
     hint: null,
     daily,
     lives: 3,
+    orientation,
   };
 }
 
 function resumeSession(saved: SudokuSession): SudokuSession {
-  return { ...saved, lives: saved.lives ?? 3 };
+  return {
+    ...saved,
+    lives: saved.lives ?? 3,
+    orientation: typeof saved.orientation === 'number' ? saved.orientation : 0,
+  };
 }
 
 export function SudokuScreen({ levelNumber, daily = false }: SudokuScreenProps) {
@@ -55,7 +63,6 @@ export function SudokuScreen({ levelNumber, daily = false }: SudokuScreenProps) 
   const { t } = useI18n();
   const today = useMemo(() => new Date(), []);
   const level = daily ? getDailySudoku(today) : getSudokuLevel(levelNumber);
-  const solution = useMemo(() => uniqueSolution(level) ?? [], [level]);
   const { size, onLayout } = useSquareLayout();
   const saveSession = useSudokuStore((state) => state.saveSession);
   const recordWin = useSudokuStore((state) => state.recordWin);
@@ -72,11 +79,13 @@ export function SudokuScreen({ levelNumber, daily = false }: SudokuScreenProps) 
   const [hintOffer, setHintOffer] = useState(false);
   const [paused, setPaused] = useState(false);
   const recorded = useRef(false);
+  const board = useMemo(() => orientLevel(level, session.orientation), [level, session.orientation]);
+  const solution = useMemo(() => uniqueSolution(board) ?? [], [board]);
 
-  const won = matchesSolution(level, session.marks, solution);
+  const won = matchesSolution(board, session.marks, solution);
   const failed = session.lives <= 0 && !won;
   const stars = starsForLightbulbs(session.lightbulbsUsed);
-  const placed = new Set(mascotCells(level, session.marks));
+  const placed = new Set(mascotCells(board, session.marks));
   const foundCount = solution.filter((cell) => placed.has(cell)).length;
   const solutionCells = useMemo(() => new Set(solution), [solution]);
 
@@ -118,7 +127,7 @@ export function SudokuScreen({ levelNumber, daily = false }: SudokuScreenProps) 
   }, [failed, hintOffer, paused, rulesOpen, won]);
 
   const onPress = (index: number) => {
-    if (paused || won || failed || isGiven(level, index)) return;
+    if (paused || won || failed || isGiven(board, index)) return;
     const current = session.marks[index];
     if (current === 'mascot' || current === 'wrong') return;
     if (current !== 'x') {
@@ -168,7 +177,10 @@ export function SudokuScreen({ levelNumber, daily = false }: SudokuScreenProps) 
   const replay = () => {
     recorded.current = false;
     setPaused(false);
-    setSession(freshSession(level, daily));
+    setShake(null);
+    setHappy(null);
+    setHintOffer(false);
+    setSession(freshSession(level, daily, differentOrientation(level, session.orientation)));
   };
 
   const leaving = useRef(false);
@@ -252,7 +264,7 @@ export function SudokuScreen({ levelNumber, daily = false }: SudokuScreenProps) 
       <View style={styles.boardArea} onLayout={onLayout}>
         {size > 0 ? (
           <SudokuBoard
-            level={level}
+            level={board}
             size={size}
             marks={session.marks}
             selected={session.selected}
@@ -282,7 +294,7 @@ export function SudokuScreen({ levelNumber, daily = false }: SudokuScreenProps) 
           icon="bulb-outline"
           label={t('hintLabel')}
           accessibilityLabel={session.lightbulb <= 0 ? t('watchMoreHint') : t('placeNext')}
-          badge={session.lightbulb}
+          badge={session.lightbulb <= 0 ? t('adBadge') : session.lightbulb}
           silent
           onPress={onLightbulb}
           size={60}

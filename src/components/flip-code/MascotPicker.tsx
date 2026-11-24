@@ -44,7 +44,7 @@ export function MascotPicker({ onPick, onHint, hintsLeft }: MascotPickerProps) {
           </AppText>
           <View style={styles.badge}>
             <AppText size={11} weight="bold" color="#FFFFFF">
-              {hintsLeft}
+              {hintsLeft > 0 ? hintsLeft : t('adBadge')}
             </AppText>
           </View>
         </Pressable>
@@ -71,7 +71,7 @@ const styles = StyleSheet.create({
     position: 'absolute',
     top: -4,
     right: -4,
-    minWidth: 18,
+    minWidth: 26,
     height: 18,
     paddingHorizontal: 4,
     borderRadius: radius.pill,

@@ -13,12 +13,12 @@ import { IconButton } from '@/components/ui/IconButton';
 import { OverlayPanel } from '@/components/ui/OverlayPanel';
 import { Screen } from '@/components/ui/Screen';
 import { StarRow } from '@/components/ui/StarRow';
-import { flipCodeDateKey, getDailyCode } from '@/flip-code/daily';
+import { dateFromKey, flipCodeDateKey, getDailyCode } from '@/flip-code/daily';
 import { canSubmit, hintSlot, isLosingBoard, isWinningScore, scoreGuess } from '@/flip-code/feedback';
 import { ATTEMPT_LIMIT, createCode, starsForAttempts } from '@/flip-code/generate';
 import type { Difficulty, FlipCodeSession, MascotId } from '@/flip-code/types';
 import { useI18n, type MessageKey } from '@/i18n';
-import { showLevelInterstitial } from '@/services/ads';
+import { rewardedAds, showLevelInterstitial } from '@/services/ads';
 import { feedback } from '@/services/feedback';
 import { useFlipCodeStore } from '@/store/flipCodeStore';
 import { spacing } from '@/theme';
@@ -33,7 +33,7 @@ function freshSession(difficulty: Difficulty, daily: boolean, dateKey: string | 
     difficulty,
     daily,
     dateKey,
-    secret: daily && dateKey ? getDailyCode(keyDate(dateKey)) : createCode(seed, difficulty),
+    secret: daily && dateKey ? getDailyCode(dateFromKey(dateKey)) : createCode(seed, difficulty),
     guesses: [],
     draft: [null, null, null, null],
     seed,
@@ -45,14 +45,18 @@ function withHints(session: FlipCodeSession): FlipCodeSession {
   return { ...session, hintsLeft: typeof session.hintsLeft === 'number' ? session.hintsLeft : 1 };
 }
 
-const EMPTY_SLOTS: (MascotId | null)[] = [null, null, null, null];
-
-function keyDate(key: string): Date {
-  const year = Number(key.slice(0, 4));
-  const month = Number(key.slice(4, 6)) - 1;
-  const day = Number(key.slice(6, 8));
-  return new Date(year, month, day);
+function canResume(saved: FlipCodeSession, daily: boolean, difficulty: Difficulty, today: string): boolean {
+  if (saved.daily !== daily || saved.difficulty !== difficulty) return false;
+  if (daily && saved.dateKey !== today) return false;
+  const last = saved.guesses[saved.guesses.length - 1];
+  if (last && isWinningScore(scoreGuess(saved.secret, last))) return false;
+  const base = ATTEMPT_LIMIT[saved.difficulty];
+  const limit = base + (saved.extraAttempt ? 1 : 0);
+  const offering = saved.guesses.length === base && !saved.extraAttempt && !saved.extraDeclined;
+  return offering || saved.guesses.length < limit;
 }
+
+const EMPTY_SLOTS: (MascotId | null)[] = [null, null, null, null];
 
 export function FlipCodeScreen({ difficulty, daily = false }: FlipCodeScreenProps) {
   const router = useRouter();
@@ -63,28 +67,27 @@ export function FlipCodeScreen({ difficulty, daily = false }: FlipCodeScreenProp
   const today = useMemo(() => flipCodeDateKey(new Date()), []);
   const [session, setSession] = useState<FlipCodeSession>(() => {
     const saved = useFlipCodeStore.getState().session;
-    const same =
-      saved &&
-      saved.daily === daily &&
-      saved.difficulty === difficulty &&
-      saved.guesses.length < ATTEMPT_LIMIT[saved.difficulty] &&
-      (!daily || saved.dateKey === today);
-    return same ? withHints(saved) : freshSession(difficulty, daily, daily ? today : null, Date.now());
+    const savedOk = saved !== null && canResume(saved, daily, difficulty, today);
+    return savedOk && saved ? withHints(saved) : freshSession(difficulty, daily, daily ? today : null, Date.now());
   });
   const [selected, setSelected] = useState<number | null>(0);
   const [review, setReview] = useState(false);
   const [rulesOpen, setRulesOpen] = useState(false);
   const [hintOffer, setHintOffer] = useState(false);
+  const [attemptAdError, setAttemptAdError] = useState(false);
+  const [loadingAttemptAd, setLoadingAttemptAd] = useState(false);
   const recorded = useRef(false);
   const listRef = useRef<ScrollView>(null);
   const listHeight = useRef(0);
   const rowFrames = useRef<{ y: number; height: number }[]>([]);
   const pendingRow = useRef<number | null>(null);
 
-  const limit = ATTEMPT_LIMIT[session.difficulty];
+  const baseLimit = ATTEMPT_LIMIT[session.difficulty];
+  const limit = baseLimit + (session.extraAttempt ? 1 : 0);
   const last = session.guesses[session.guesses.length - 1];
   const won = last ? isWinningScore(scoreGuess(session.secret, last)) : false;
-  const lost = isLosingBoard(session.guesses.length, limit, won);
+  const offerExtra = !won && session.guesses.length === baseLimit && !session.extraAttempt && !session.extraDeclined;
+  const lost = !offerExtra && isLosingBoard(session.guesses.length, limit, won);
   const finished = won || lost;
   const stars = starsForAttempts(session.guesses.length);
 
@@ -95,6 +98,7 @@ export function FlipCodeScreen({ difficulty, daily = false }: FlipCodeScreenProp
 
   useEffect(() => {
     const subscription = BackHandler.addEventListener('hardwareBackPress', () => {
+      if (offerExtra) return true;
       if (hintOffer) {
         setHintOffer(false);
         return true;
@@ -104,7 +108,7 @@ export function FlipCodeScreen({ difficulty, daily = false }: FlipCodeScreenProp
       return true;
     });
     return () => subscription.remove();
-  }, [hintOffer, rulesOpen]);
+  }, [hintOffer, offerExtra, rulesOpen]);
 
   useEffect(() => {
     if (!finished || recorded.current) return;
@@ -114,7 +118,7 @@ export function FlipCodeScreen({ difficulty, daily = false }: FlipCodeScreenProp
   }, [finished, recordResult, session.daily, session.dateKey, session.guesses.length, won]);
 
   const choose = (id: MascotId) => {
-    if (finished || selected === null) return;
+    if (finished || offerExtra || selected === null) return;
     const draft = session.draft.slice();
     draft[selected] = id;
     const next = draft.findIndex((slot) => slot === null);
@@ -124,7 +128,7 @@ export function FlipCodeScreen({ difficulty, daily = false }: FlipCodeScreenProp
   };
 
   const pressSlot = (index: number) => {
-    if (finished) return;
+    if (finished || offerExtra) return;
     if (session.draft[index] !== null) {
       const draft = session.draft.slice();
       draft[index] = null;
@@ -137,7 +141,7 @@ export function FlipCodeScreen({ difficulty, daily = false }: FlipCodeScreenProp
   };
 
   const useHint = () => {
-    if (finished) return;
+    if (finished || offerExtra) return;
     if (session.hintsLeft <= 0) {
       setHintOffer(true);
       return;
@@ -153,7 +157,7 @@ export function FlipCodeScreen({ difficulty, daily = false }: FlipCodeScreenProp
   };
 
   const submit = () => {
-    if (finished || !canSubmit(session.draft)) return;
+    if (finished || offerExtra || !canSubmit(session.draft)) return;
     const guess = session.draft as MascotId[];
     const guesses = [...session.guesses, guess];
     feedback('tap', 'tap');
@@ -200,13 +204,55 @@ export function FlipCodeScreen({ difficulty, daily = false }: FlipCodeScreenProp
     }
   }, [focusRow]);
 
+  const watchAttempt = async () => {
+    setAttemptAdError(false);
+    setLoadingAttemptAd(true);
+    const rewarded = await rewardedAds.showRewarded();
+    setLoadingAttemptAd(false);
+    if (!rewarded) {
+      setAttemptAdError(true);
+      return;
+    }
+    setSession((current) => ({ ...current, extraAttempt: true }));
+  };
+
   const title = daily ? t('daily') : t(session.difficulty as MessageKey);
   const left = limit - session.guesses.length;
 
   return (
     <Screen
       overlay={
-        hintOffer ? (
+        offerExtra ? (
+          <OverlayPanel>
+            <AppText size={28} weight="bold" align="center">
+              {t('oneMoreTry')}
+            </AppText>
+            <AppText size={15} tone="muted" align="center">
+              {t('watchForAttempt')}
+            </AppText>
+            <GameButton
+              label={loadingAttemptAd ? t('loadingAd') : t('moreAttempt')}
+              caption={loadingAttemptAd ? t('videoReady') : t('watchShortAd')}
+              icon="play-circle"
+              onPress={watchAttempt}
+              disabled={loadingAttemptAd}
+              style={styles.full}
+            />
+            {attemptAdError ? (
+              <AppText size={13} tone="muted" align="center">
+                {t('adNoAttempt')}
+              </AppText>
+            ) : null}
+            <GameButton
+              label={t('notNow')}
+              variant="ghost"
+              size="sm"
+              onPress={() => setSession((current) => ({ ...current, extraDeclined: true }))}
+              disabled={loadingAttemptAd}
+              style={styles.full}
+            />
+          </OverlayPanel>
+        ) : hintOffer ? (
           <HintOfferOverlay
             hints={1}
             onGrant={() => {

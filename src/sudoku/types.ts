@@ -30,4 +30,6 @@ export interface SudokuSession {
   daily: boolean;
   /** Wrong guesses remaining. A level starts with 3. */
   lives: number;
+  /** Turn or mirror of the stored level. 0 is the original board. */
+  orientation: number;
 }

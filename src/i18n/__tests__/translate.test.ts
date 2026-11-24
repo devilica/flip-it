@@ -2,7 +2,7 @@ import { migrateProgress } from '@/store/progressModel';
 
 import { en } from '../en';
 import { LANGUAGE_CODES } from '../languages';
-import { catalogs } from '../catalog';
+import { catalogs, localeSources } from '../catalog';
 import { translate } from '../translate';
 
 const placeholders = (value: string) => [...value.matchAll(/\{[a-zA-Z]+\}/g)].map((match) => match[0]).sort();
@@ -20,15 +20,19 @@ describe('translations', () => {
   });
 
   it('gives every language the same keys and the same placeholders', () => {
-    const keys = Object.keys(en);
+    const keys = Object.keys(en) as (keyof typeof en)[];
     expect(LANGUAGE_CODES).toHaveLength(46);
     for (const language of LANGUAGE_CODES) {
       expect(Object.keys(catalogs[language]).sort()).toEqual([...keys].sort());
-      for (const key of keys as (keyof typeof en)[]) {
-        expect(catalogs[language][key].length).toBeGreaterThan(0);
+      const raw = language === 'en' ? en : localeSources[language];
+      for (const key of keys) {
+        const value = raw[key];
+        expect(typeof value).toBe('string');
+        expect(value!.length).toBeGreaterThan(0);
+        expect(placeholders(value!)).toEqual(placeholders(en[key]));
         expect(placeholders(catalogs[language][key])).toEqual(placeholders(en[key]));
         if (language !== 'en' && (key === 'chooseGame' || key === 'howToPlay' || key === 'resetBody')) {
-          expect(catalogs[language][key]).not.toBe(en[key]);
+          expect(value).not.toBe(en[key]);
         }
       }
     }

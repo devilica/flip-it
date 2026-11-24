@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { create } from 'zustand';
 import { createJSONStorage, persist } from 'zustand/middleware';
 
+import { canSaveDailyStreak, nextDailyStreak, shiftDateKey } from '@/flip-code/daily';
 import type { FlipCodeSession } from '@/flip-code/types';
 import { storage } from '@/services/storage';
 
@@ -12,6 +13,10 @@ interface FlipCodeData {
   attemptsTotal: number;
   streak: number;
   bestStreak: number;
+  /** Consecutive daily clears. A missed day breaks it unless an ad saved yesterday. */
+  dailyStreak: number;
+  /** YYYYMMDD of a missed day an ad kept in the streak. */
+  streakBridge: string | null;
   /** YYYYMMDD of the daily code that has been cleared. */
   dailyCleared: string | null;
   session: FlipCodeSession | null;
@@ -21,6 +26,8 @@ interface FlipCodeActions {
   saveSession: (session: FlipCodeSession) => void;
   clearSession: () => void;
   recordResult: (won: boolean, attempts: number, daily: boolean, dateKey: string | null) => void;
+  /** Keeps the daily streak across exactly one missed day. */
+  saveDailyStreak: (today: string) => boolean;
 }
 
 const empty = (): FlipCodeData => ({
@@ -29,6 +36,8 @@ const empty = (): FlipCodeData => ({
   attemptsTotal: 0,
   streak: 0,
   bestStreak: 0,
+  dailyStreak: 0,
+  streakBridge: null,
   dailyCleared: null,
   session: null,
 });
@@ -47,15 +56,27 @@ export const useFlipCodeStore = create<FlipCodeData & FlipCodeActions>()(
           return;
         }
         const streak = won ? get().streak + 1 : 0;
+        const continuesDaily = daily && won && dateKey;
         set({
           played: get().played + 1,
           won: get().won + (won ? 1 : 0),
           attemptsTotal: get().attemptsTotal + (won ? attempts : 0),
           streak,
           bestStreak: Math.max(get().bestStreak, streak),
-          dailyCleared: daily && won && dateKey ? dateKey : get().dailyCleared,
+          dailyStreak: continuesDaily
+            ? nextDailyStreak(get().dailyCleared, get().streakBridge, get().dailyStreak, dateKey)
+            : get().dailyStreak,
+          streakBridge: continuesDaily ? null : get().streakBridge,
+          dailyCleared: continuesDaily ? dateKey : get().dailyCleared,
           session: null,
         });
+      },
+
+      saveDailyStreak: (today) => {
+        const { dailyCleared, streakBridge, dailyStreak } = get();
+        if (!canSaveDailyStreak(dailyCleared, streakBridge, dailyStreak, today)) return false;
+        set({ streakBridge: shiftDateKey(today, -1) });
+        return true;
       },
     }),
     {
@@ -67,14 +88,21 @@ export const useFlipCodeStore = create<FlipCodeData & FlipCodeActions>()(
         attemptsTotal: state.attemptsTotal,
         streak: state.streak,
         bestStreak: state.bestStreak,
+        dailyStreak: state.dailyStreak,
+        streakBridge: state.streakBridge,
         dailyCleared: state.dailyCleared,
         session: state.session,
       }),
-      merge: (persisted, current) => ({
-        ...current,
-        ...empty(),
-        ...(persisted as Partial<FlipCodeData>),
-      }),
+      merge: (persisted, current) => {
+        const saved = (persisted ?? {}) as Partial<FlipCodeData>;
+        return {
+          ...current,
+          ...empty(),
+          ...saved,
+          dailyStreak: typeof saved.dailyStreak === 'number' && saved.dailyStreak >= 0 ? saved.dailyStreak : 0,
+          streakBridge: typeof saved.streakBridge === 'string' ? saved.streakBridge : null,
+        };
+      },
     },
   ),
 );

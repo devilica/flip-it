@@ -4,12 +4,15 @@ import { applyTap, findHint, isSolved, isValidIndex, starsForMoves, type StarCou
 import type { Board, LevelDef } from '@/game/types';
 
 export const TAP_LOCK_MS = 200;
-export const HINTS_PER_LEVEL = 3;
+export const HINTS_PER_LEVEL = 2;
+export const HINTS_PER_AD = 1;
 export const BONUS_MOVES = 10;
+export const BONUS_MOVES_EXTRA = 5;
+export const FREE_UNDOS = 3;
+export const UNDOS_PER_AD = 2;
 
-/** Starting hints. Puzzles longer than 5 moves get two fewer than the optimal solution. */
-export function hintsForPar(par: number): number {
-  if (par > 5) return par - 2;
+/** Every level starts with the same two hints. A rewarded ad adds one more. */
+export function hintsForPar(_par: number): number {
   return HINTS_PER_LEVEL;
 }
 
@@ -26,6 +29,7 @@ export interface ResumeData {
   history: number[];
   hintsLeft: number;
   bonusMoves: number;
+  undosLeft: number;
 }
 
 interface GameState {
@@ -35,6 +39,7 @@ interface GameState {
   history: number[];
   bonusMoves: number;
   hintsLeft: number;
+  undosLeft: number;
   hintCell: number | null;
   status: GameStatus;
   earnedStars: StarCount;
@@ -52,6 +57,8 @@ interface GameState {
   grantBonusMoves: () => boolean;
   /** Adds another set of hints after a rewarded ad. Only while the level is in play. */
   grantHints: () => boolean;
+  /** Adds two undos after a rewarded ad. Only while the level is in play. */
+  grantUndos: () => boolean;
   exit: () => void;
 }
 
@@ -68,6 +75,7 @@ const initialState = {
   history: [],
   bonusMoves: 0,
   hintsLeft: HINTS_PER_LEVEL,
+  undosLeft: FREE_UNDOS,
   hintCell: null,
   status: 'idle' as GameStatus,
   earnedStars: 0 as StarCount,
@@ -99,6 +107,7 @@ export const useGameStore = create<GameState>()((set, get) => ({
       history: solvedOnResume ? [] : history,
       bonusMoves,
       hintsLeft: resume?.hintsLeft ?? hintsForPar(level.par),
+      undosLeft: resume?.undosLeft ?? FREE_UNDOS,
       status: outOfMoves ? 'failed' : 'playing',
     });
   },
@@ -127,13 +136,14 @@ export const useGameStore = create<GameState>()((set, get) => ({
   },
 
   undo: () => {
-    const { board, history, status, lastTap } = get();
-    if (!board || status !== 'playing' || history.length === 0) return false;
+    const { board, history, status, lastTap, undosLeft } = get();
+    if (!board || status !== 'playing' || history.length === 0 || undosLeft <= 0) return false;
     const index = history[history.length - 1];
     set({
       board: undoTap(board, index),
       history: history.slice(0, -1),
       hintCell: null,
+      undosLeft: undosLeft - 1,
       lastTap: { index, seq: (lastTap?.seq ?? 0) + 1 },
       lockUntil: 0,
     });
@@ -174,14 +184,22 @@ export const useGameStore = create<GameState>()((set, get) => ({
 
   grantBonusMoves: () => {
     const { status, bonusMoves } = get();
-    if (status !== 'failed' || bonusMoves > 0) return false;
-    set({ status: 'playing', bonusMoves: BONUS_MOVES, lockUntil: 0 });
+    if (status !== 'failed') return false;
+    const next = bonusMoves === 0 ? BONUS_MOVES : bonusMoves === BONUS_MOVES ? BONUS_MOVES + BONUS_MOVES_EXTRA : 0;
+    if (next === 0) return false;
+    set({ status: 'playing', bonusMoves: next, lockUntil: 0 });
     return true;
   },
 
   grantHints: () => {
     if (get().status !== 'playing') return false;
-    set({ hintsLeft: get().hintsLeft + HINTS_PER_LEVEL });
+    set({ hintsLeft: get().hintsLeft + HINTS_PER_AD });
+    return true;
+  },
+
+  grantUndos: () => {
+    if (get().status !== 'playing') return false;
+    set({ undosLeft: get().undosLeft + UNDOS_PER_AD });
     return true;
   },
 

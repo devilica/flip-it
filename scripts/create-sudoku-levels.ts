@@ -1,6 +1,7 @@
 import { writeFileSync } from 'node:fs';
 import { resolve } from 'node:path';
 
+import { SUDOKU_LEVELS as existingLevels } from '../src/sudoku/levels';
 import { solveLevel } from '../src/sudoku/solver';
 import type { SudokuLevel } from '../src/sudoku/types';
 
@@ -135,6 +136,11 @@ const specs = [
   ...fill(40, 8, 6, 1, 1, 1),
   ...fill(40, 9, 7, 1, 1, 1),
   ...fill(20, 10, 8, 1, 1, 1),
+  ...fill(40, 10, 9, 1, 1, 1),
+  ...fill(40, 11, 9, 1, 1, 1),
+  ...fill(40, 11, 11, 1, 1, 1),
+  ...fill(40, 12, 10, 1, 1, 1),
+  ...fill(40, 12, 12, 1, 1, 1),
 ];
 
 const levels: SudokuLevel[] = [];
@@ -155,9 +161,15 @@ for (const spec of specs) {
   console.log(`level ${levels.length} (${spec.size}x${spec.size}), seed ${seed}`);
 }
 
+const kept = existingLevels.slice(0, 200);
+const same = levels.slice(0, 200).every((level, index) => JSON.stringify(level) === JSON.stringify(kept[index]));
+if (kept.length !== 200 || !same) {
+  throw new Error('The first 200 Flip Sudoku levels changed. Nothing was written.');
+}
+
 const body = `import type { SudokuLevel } from './types';
 
-/** Two hundred validated puzzles. Each one has exactly one way to place the mascots. */
+/** Four hundred validated puzzles. Each one has exactly one way to place the mascots. */
 export const SUDOKU_LEVELS: SudokuLevel[] = ${JSON.stringify(levels, null, 2)};
 
 export const SUDOKU_LEVEL_COUNT = SUDOKU_LEVELS.length;

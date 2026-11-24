@@ -1,4 +1,5 @@
 import { isLanguage } from '@/i18n/languages';
+import { FREE_UNDOS } from '@/store/gameStore';
 
 export const CURRENT_SAVE_VERSION = 1;
 
@@ -20,6 +21,7 @@ export interface SavedSession {
   history: number[];
   hintsLeft: number;
   bonusMoves: number;
+  undosLeft: number;
 }
 
 export interface DailyResult {
@@ -78,7 +80,7 @@ function numberRecord(value: unknown): Record<string, number> {
 
 function sanitizeSession(value: unknown): SavedSession | null {
   if (!isRecord(value)) return null;
-  const { levelNumber, history, hintsLeft, bonusMoves } = value;
+  const { levelNumber, history, hintsLeft, bonusMoves, undosLeft } = value;
   if (typeof levelNumber !== 'number' || !Array.isArray(history)) return null;
   if (!history.every((tap) => typeof tap === 'number')) return null;
   return {
@@ -86,6 +88,7 @@ function sanitizeSession(value: unknown): SavedSession | null {
     history: history as number[],
     hintsLeft: typeof hintsLeft === 'number' ? hintsLeft : 0,
     bonusMoves: typeof bonusMoves === 'number' ? bonusMoves : 0,
+    undosLeft: typeof undosLeft === 'number' && undosLeft >= 0 ? undosLeft : FREE_UNDOS,
   };
 }
 
@@ -137,6 +140,18 @@ export function totalStars(progress: Pick<ProgressData, 'stars'>): number {
 
 export function completedCount(progress: Pick<ProgressData, 'stars'>): number {
   return Object.keys(progress.stars).length;
+}
+
+/** A solved old final level opens the first level added after that save was capped. */
+export function openClearedEnding(
+  unlockedLevel: number,
+  stars: Record<string, number>,
+  finishedLevel: number,
+  totalLevels: number,
+): number {
+  const cleared = (stars[String(finishedLevel)] ?? 0) > 0;
+  const next = cleared ? Math.max(unlockedLevel, finishedLevel + 1) : unlockedLevel;
+  return Math.min(totalLevels, Math.max(1, Math.floor(next)));
 }
 
 /** Pure reducer for a level win; kept separate from the store so it is easy to test. */

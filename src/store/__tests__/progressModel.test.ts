@@ -3,6 +3,7 @@ import {
   createDefaultProgress,
   CURRENT_SAVE_VERSION,
   migrateProgress,
+  openClearedEnding,
   totalStars,
 } from '../progressModel';
 
@@ -27,7 +28,7 @@ describe('progress model', () => {
   it('clears the saved session for the won level', () => {
     const progress = {
       ...createDefaultProgress(),
-      session: { levelNumber: 1, history: [1], hintsLeft: 3, bonusMoves: 0 },
+      session: { levelNumber: 1, history: [1], hintsLeft: 3, bonusMoves: 0, undosLeft: 3 },
     };
     expect(applyLevelWin(progress, 1, 3, 3, 200).session).toBeNull();
   });
@@ -47,12 +48,21 @@ describe('progress model', () => {
     expect(migrated.stars).toEqual({ '1': 3 });
     expect(migrated.settings).toEqual({ sound: false, music: true, haptics: true, theme: 'dark', language: 'en' });
     expect(migrated.session).toBeNull();
+    expect(
+      migrateProgress({ session: { levelNumber: 2, history: [4], hintsLeft: 1, bonusMoves: 0 } }, 1).session,
+    ).toEqual({ levelNumber: 2, history: [4], hintsLeft: 1, bonusMoves: 0, undosLeft: 3 });
     expect(migrated.tutorialSeen).toBe(false);
   });
 
   it('remembers a finished tutorial and treats a missing flag as unseen', () => {
     expect(migrateProgress({ tutorialSeen: true, unlockedLevel: 4 }, 1).tutorialSeen).toBe(true);
     expect(migrateProgress({ unlockedLevel: 4 }, 1).tutorialSeen).toBe(false);
+  });
+
+  it('opens the next level when the old final level is already solved', () => {
+    expect(openClearedEnding(200, { '200': 3 }, 200, 300)).toBe(201);
+    expect(openClearedEnding(200, {}, 200, 300)).toBe(200);
+    expect(openClearedEnding(40, { '12': 2 }, 200, 300)).toBe(40);
   });
 
   it('falls back to defaults for unreadable data', () => {

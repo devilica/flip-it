@@ -1,6 +1,6 @@
 import Ionicons from '@expo/vector-icons/Ionicons';
 import { useRouter } from 'expo-router';
-import { useMemo } from 'react';
+import { useMemo, useState } from 'react';
 import { Image, StyleSheet, useWindowDimensions, View } from 'react-native';
 import Animated, { FadeInDown, FadeInUp } from 'react-native-reanimated';
 
@@ -8,11 +8,12 @@ import { AppText } from '@/components/ui/AppText';
 import { GameButton } from '@/components/ui/GameButton';
 import { IconButton } from '@/components/ui/IconButton';
 import { Screen } from '@/components/ui/Screen';
-import { flipCodeDateKey } from '@/flip-code/daily';
+import { canSaveDailyStreak, flipCodeDateKey } from '@/flip-code/daily';
 import { CODE_MASCOTS } from '@/flip-code/mascots';
 import type { Difficulty } from '@/flip-code/types';
 import { useTheme } from '@/hooks/useTheme';
 import { useI18n, type MessageKey } from '@/i18n';
+import { rewardedAds } from '@/services/ads';
 import { useFlipCodeStore } from '@/store/flipCodeStore';
 import { radius, spacing } from '@/theme';
 
@@ -30,9 +31,16 @@ export function FlipCodeHomeScreen() {
   const won = useFlipCodeStore((state) => state.won);
   const attemptsTotal = useFlipCodeStore((state) => state.attemptsTotal);
   const bestStreak = useFlipCodeStore((state) => state.bestStreak);
+  const dailyStreak = useFlipCodeStore((state) => state.dailyStreak);
+  const streakBridge = useFlipCodeStore((state) => state.streakBridge);
+  const saveDailyStreak = useFlipCodeStore((state) => state.saveDailyStreak);
   const dailyCleared = useFlipCodeStore((state) => state.dailyCleared);
   const today = useMemo(() => flipCodeDateKey(new Date()), []);
   const doneToday = dailyCleared === today;
+  const [streakDismissed, setStreakDismissed] = useState(false);
+  const [savingStreak, setSavingStreak] = useState(false);
+  const [streakAdError, setStreakAdError] = useState(false);
+  const offerStreak = !doneToday && !streakDismissed && canSaveDailyStreak(dailyCleared, streakBridge, dailyStreak, today);
   const rate = played === 0 ? 0 : Math.round((won / played) * 100);
   const average = won === 0 ? '—' : (attemptsTotal / won).toFixed(1);
   const compact = height < 720;
@@ -40,6 +48,15 @@ export function FlipCodeHomeScreen() {
 
   const play = (difficulty: Difficulty) => {
     router.push({ pathname: '/flip-code/play', params: { difficulty } });
+  };
+
+  const keepStreak = async () => {
+    setStreakAdError(false);
+    setSavingStreak(true);
+    const rewarded = await rewardedAds.showRewarded();
+    setSavingStreak(false);
+    if (rewarded) saveDailyStreak(today);
+    else setStreakAdError(true);
   };
 
   return (
@@ -112,6 +129,26 @@ export function FlipCodeHomeScreen() {
               onPress={() => play(level.id)}
             />
           ))}
+          {offerStreak ? (
+            <View style={styles.streakOffer}>
+              <AppText size={14} tone="muted" align="center">
+                {t('saveStreak', { n: dailyStreak })}
+              </AppText>
+              <GameButton
+                label={savingStreak ? t('loadingAd') : t('keepStreak')}
+                caption={savingStreak ? t('videoReady') : t('watchShortAd')}
+                icon="play-circle"
+                onPress={keepStreak}
+                disabled={savingStreak}
+              />
+              {streakAdError ? (
+                <AppText size={13} tone="muted" align="center">
+                  {t('adNoStreak')}
+                </AppText>
+              ) : null}
+              <GameButton label={t('notNow')} variant="ghost" size="sm" onPress={() => setStreakDismissed(true)} disabled={savingStreak} />
+            </View>
+          ) : null}
           <GameButton
             label={t('dailyChallenge')}
             caption={doneToday ? t('dailyDone') : t('dailyFreshCode')}
@@ -154,6 +191,7 @@ const styles = StyleSheet.create({
   mascots: { alignItems: 'center', gap: spacing.xs },
   mascotRow: { flexDirection: 'row', justifyContent: 'center', gap: spacing.lg },
   actions: { gap: spacing.md },
+  streakOffer: { gap: spacing.sm },
   stats: { flexDirection: 'row', borderRadius: radius.lg, paddingVertical: spacing.md },
   stat: { flex: 1, gap: 2 },
 });

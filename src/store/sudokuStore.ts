@@ -5,6 +5,7 @@ import { createJSONStorage, persist } from 'zustand/middleware';
 import { storage } from '@/services/storage';
 import { SUDOKU_LEVEL_COUNT } from '@/sudoku/levels';
 import type { SudokuSession } from '@/sudoku/types';
+import { openClearedEnding } from './progressModel';
 
 interface SudokuData {
   unlockedLevel: number;
@@ -66,11 +67,14 @@ export const useSudokuStore = create<SudokuData & SudokuActions>()(
         session,
         dailyCleared,
       }),
-      merge: (persisted, current) => ({
-        ...current,
-        ...empty(),
-        ...(persisted as Partial<SudokuData>),
-      }),
+      merge: (persisted, current) => {
+        const saved = { ...empty(), ...(persisted as Partial<SudokuData>) };
+        return {
+          ...current,
+          ...saved,
+          unlockedLevel: openClearedEnding(saved.unlockedLevel, saved.stars, 200, SUDOKU_LEVEL_COUNT),
+        };
+      },
     },
   ),
 );

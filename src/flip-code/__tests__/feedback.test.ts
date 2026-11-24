@@ -1,4 +1,4 @@
-import { getDailyCode, flipCodeDateKey } from '../daily';
+import { canSaveDailyStreak, flipCodeDateKey, getDailyCode, nextDailyStreak, shiftDateKey } from '../daily';
 import { canSubmit, hintSlot, isLosingBoard, isWinningScore, scoreGuess } from '../feedback';
 import { ATTEMPT_LIMIT, createCode, starsForAttempts } from '../generate';
 import type { MascotId } from '../types';
@@ -105,5 +105,18 @@ describe('FLIP CODE feedback', () => {
     expect(getDailyCode(day)).toEqual(getDailyCode(day));
     expect(getDailyCode(day)).toEqual(createCode(20261117, 'medium'));
     expect(getDailyCode(next)).toEqual(createCode(20261118, 'medium'));
+  });
+
+  it('saves a daily streak only across one missed day', () => {
+    const today = '20261120';
+    const yesterday = shiftDateKey(today, -1);
+    const missed = shiftDateKey(today, -2);
+    expect(canSaveDailyStreak(missed, null, 4, today)).toBe(true);
+    expect(canSaveDailyStreak(yesterday, null, 4, today)).toBe(false);
+    expect(canSaveDailyStreak(missed, null, 0, today)).toBe(false);
+    expect(canSaveDailyStreak(shiftDateKey(today, -3), null, 4, today)).toBe(false);
+    expect(nextDailyStreak(yesterday, null, 4, today)).toBe(5);
+    expect(nextDailyStreak(missed, yesterday, 4, today)).toBe(5);
+    expect(nextDailyStreak(missed, null, 4, today)).toBe(1);
   });
 });

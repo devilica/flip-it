@@ -12,6 +12,7 @@ import Animated, {
 import { SkiaBoard } from '@/components/board/SkiaBoard';
 import { FailOverlay } from '@/components/game/FailOverlay';
 import { HintOfferOverlay } from '@/components/game/HintOfferOverlay';
+import { UndoOfferOverlay } from '@/components/game/UndoOfferOverlay';
 import { GameControls } from '@/components/game/GameControls';
 import { GameHud } from '@/components/game/GameHud';
 import { PauseOverlay } from '@/components/game/PauseOverlay';
@@ -27,7 +28,15 @@ import { useTheme } from '@/hooks/useTheme';
 import { useI18n } from '@/i18n';
 import { showLevelInterstitial } from '@/services/ads';
 import { feedback } from '@/services/feedback';
-import { selectMoveLimit, selectMovesUsed, useGameStore, type GameMode } from '@/store/gameStore';
+import {
+  BONUS_MOVES,
+  BONUS_MOVES_EXTRA,
+  HINTS_PER_AD,
+  selectMoveLimit,
+  selectMovesUsed,
+  useGameStore,
+  type GameMode,
+} from '@/store/gameStore';
 import { useProgressStore } from '@/store/progressStore';
 import { spacing } from '@/theme';
 
@@ -60,6 +69,7 @@ export function GameScreen({ mode, levelNumber = 1, resume = false }: GameScreen
   const lastTap = useGameStore((state) => state.lastTap);
   const hintCell = useGameStore((state) => state.hintCell);
   const hintsLeft = useGameStore((state) => state.hintsLeft);
+  const undosLeft = useGameStore((state) => state.undosLeft);
   const bonusMoves = useGameStore((state) => state.bonusMoves);
   const earnedStars = useGameStore((state) => state.earnedStars);
   const history = useGameStore((state) => state.history);
@@ -74,6 +84,7 @@ export function GameScreen({ mode, levelNumber = 1, resume = false }: GameScreen
   const [ready, setReady] = useState(false);
   const [continuing, setContinuing] = useState(false);
   const [hintOffer, setHintOffer] = useState(false);
+  const [undoOffer, setUndoOffer] = useState(false);
   const [rulesOpen, setRulesOpen] = useState(false);
   const { size: boardSize, onLayout } = useSquareLayout();
   const nowMoves = useMemo(() => {
@@ -114,12 +125,12 @@ export function GameScreen({ mode, levelNumber = 1, resume = false }: GameScreen
     const progress = useProgressStore.getState();
     if (status === 'playing' || status === 'paused') {
       if (history.length > 0) {
-        progress.saveSession({ levelNumber: level.number, history, hintsLeft, bonusMoves });
+        progress.saveSession({ levelNumber: level.number, history, hintsLeft, bonusMoves, undosLeft });
       } else if (progress.session?.levelNumber === level.number) {
         progress.clearSession();
       }
     }
-  }, [bonusMoves, history, hintsLeft, level, mode, ready, status]);
+  }, [bonusMoves, history, hintsLeft, level, mode, ready, status, undosLeft]);
 
   // Outcome side effects.
   const shake = useSharedValue(0);
@@ -154,6 +165,10 @@ export function GameScreen({ mode, levelNumber = 1, resume = false }: GameScreen
   // Android back: pause first, then resume, otherwise leave normally.
   useEffect(() => {
     const subscription = BackHandler.addEventListener('hardwareBackPress', () => {
+      if (undoOffer) {
+        setUndoOffer(false);
+        return true;
+      }
       if (hintOffer) {
         setHintOffer(false);
         return true;
@@ -174,7 +189,7 @@ export function GameScreen({ mode, levelNumber = 1, resume = false }: GameScreen
       return false;
     });
     return () => subscription.remove();
-  }, [hintOffer, rulesOpen]);
+  }, [hintOffer, rulesOpen, undoOffer]);
 
   const onTapCell = useCallback(
     (index: number) => {
@@ -184,8 +199,13 @@ export function GameScreen({ mode, levelNumber = 1, resume = false }: GameScreen
   );
 
   const onUndo = useCallback(() => {
+    if (history.length === 0) return;
+    if (undosLeft <= 0) {
+      setUndoOffer(true);
+      return;
+    }
     if (actions.undo()) feedback('undo', 'tap');
-  }, [actions]);
+  }, [actions, history.length, undosLeft]);
 
   const onRestart = useCallback(() => {
     actions.restart();
@@ -243,9 +263,22 @@ export function GameScreen({ mode, levelNumber = 1, resume = false }: GameScreen
         onHome={goHome}
       />
     );
+  } else if (ready && level && status === 'playing' && undoOffer) {
+    overlay = (
+      <UndoOfferOverlay
+        onGrant={() => {
+          if (actions.grantUndos()) {
+            feedback('undo', 'success');
+            setUndoOffer(false);
+          }
+        }}
+        onClose={() => setUndoOffer(false)}
+      />
+    );
   } else if (ready && level && status === 'playing' && hintOffer) {
     overlay = (
       <HintOfferOverlay
+        hints={HINTS_PER_AD}
         onGrant={() => {
           if (actions.grantHints()) {
             feedback('hint', 'success');
@@ -260,7 +293,8 @@ export function GameScreen({ mode, levelNumber = 1, resume = false }: GameScreen
   } else if (ready && level && status === 'failed') {
     overlay = (
       <FailOverlay
-        canUseBonus={bonusMoves === 0}
+        canUseBonus={bonusMoves === 0 || bonusMoves === BONUS_MOVES}
+        bonusMoves={bonusMoves === 0 ? BONUS_MOVES : BONUS_MOVES_EXTRA}
         onRetry={onRestart}
         onBonus={() => {
           if (actions.grantBonusMoves()) feedback('star', 'success');
@@ -305,6 +339,7 @@ export function GameScreen({ mode, levelNumber = 1, resume = false }: GameScreen
           </View>
           <GameControls
             canUndo={history.length > 0}
+            undosLeft={undosLeft}
             canRestart={history.length > 0}
             hintsLeft={hintsLeft}
             hintActive={hintCell !== null}

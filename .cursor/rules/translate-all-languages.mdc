@@ -1,0 +1,19 @@
+---
+description: Every player-facing string must be translated in all languages in the same change
+alwaysApply: true
+---
+
+# Translate every new string
+
+English lives in `src/i18n/en.ts`. The other 45 languages are `src/i18n/locales/*.json`. A missing key falls back to English in `pack()`, and that is not a finished translation.
+
+Any text the player can see goes through `t()`. A new or changed word, sentence, button, screen, or game is added to `en.ts` and to every locale file in the same task.
+
+- Keep placeholders identical, including `{n}`.
+- Match the words that language already uses for the same idea.
+- Do not ship a locale still showing the English sentence.
+- After the edit, run `npx jest src/i18n/__tests__/translate.test.ts`. The test reads the raw JSON and fails when a language is missing a key.
+
+```json
+"undoLeft": "Poništi, još {n}"
+```
