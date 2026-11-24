@@ -84,13 +84,37 @@ export function submitScore(mode: GameMode, score: number): Promise<void> {
   });
 }
 
-export async function loadLeaderboard(mode: GameMode, span: RankSpan): Promise<ScorePage | null> {
-  if (!playGamesNative) return null;
-  try {
-    return await playGamesNative.loadScores(LEADERBOARDS[mode].id, span, 25);
-  } catch {
-    return null;
-  }
+const SCORE_PAUSE_MS = 30_000;
+const scoreCache = new Map<string, { at: number; page: ScorePage }>();
+const scoreCooldown = new Map<string, number>();
+const scoreRequests = new Map<string, Promise<ScorePage | null>>();
+
+export function loadLeaderboard(mode: GameMode, span: RankSpan): Promise<ScorePage | null> {
+  if (!playGamesNative) return Promise.resolve(null);
+  const key = `${mode}:${span}`;
+  const now = Date.now();
+  const cached = scoreCache.get(key);
+  if (cached && now - cached.at < SCORE_PAUSE_MS) return Promise.resolve(cached.page);
+  if ((scoreCooldown.get(key) ?? 0) > now) return Promise.resolve(null);
+  const pending = scoreRequests.get(key);
+  if (pending) return pending;
+  const request = playGamesNative
+    .loadScores(LEADERBOARDS[mode].id, span, 25)
+    .then((page) => {
+      if (!page) return null;
+      scoreCache.set(key, { at: Date.now(), page });
+      scoreCooldown.delete(key);
+      return page;
+    })
+    .catch(() => {
+      scoreCooldown.set(key, Date.now() + SCORE_PAUSE_MS);
+      return null;
+    })
+    .finally(() => {
+      scoreRequests.delete(key);
+    });
+  scoreRequests.set(key, request);
+  return request;
 }
 
 export async function openNativeLeaderboard(mode: GameMode, span: RankSpan): Promise<boolean> {

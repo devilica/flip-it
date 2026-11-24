@@ -62,10 +62,15 @@ class PlayGamesModule : Module() {
             .loadTopScores(leaderboardId, timeSpan, LeaderboardVariant.COLLECTION_PUBLIC, count, false)
             .addOnCompleteListener { top ->
               if (!top.isSuccessful) {
-                settled.resolve(empty)
+                settled.resolve(null)
                 return@addOnCompleteListener
               }
               val entries = readScores(top.result?.get(), playerId)
+              val listed = entries.firstOrNull { it["currentPlayer"] == true }
+              if (listed != null) {
+                settled.resolve(scorePage(entries, listed))
+                return@addOnCompleteListener
+              }
               leaderboards
                 .loadCurrentPlayerLeaderboardScore(leaderboardId, timeSpan, LeaderboardVariant.COLLECTION_PUBLIC)
                 .addOnCompleteListener { mine ->
@@ -82,12 +87,16 @@ class PlayGamesModule : Module() {
         PlayGames.getLeaderboardsClient(activity)
           .getLeaderboardIntent(leaderboardId, timeSpan(span))
           .addOnCompleteListener {
-            if (!it.isSuccessful) {
+            val intent = it.result
+            if (!it.isSuccessful || intent == null) {
               settled.resolve(false)
               return@addOnCompleteListener
             }
-            runCatching { activity.startActivity(it.result) }
-            settled.resolve(true)
+            val opened = runCatching {
+              @Suppress("DEPRECATION")
+              activity.startActivityForResult(intent, 9001)
+            }.isSuccess
+            settled.resolve(opened)
           }
       }
     }.runOnQueue(Queues.MAIN)

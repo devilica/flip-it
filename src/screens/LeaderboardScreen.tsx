@@ -183,7 +183,11 @@ export function LeaderboardScreen() {
           icon="open-outline"
           variant="secondary"
           onPress={() => {
-            openNativeLeaderboard(shown, span).catch(() => {});
+            openNativeLeaderboard(shown, span)
+              .then((opened) => {
+                if (!opened) setFailed(true);
+              })
+              .catch(() => setFailed(true));
           }}
         />
       ) : null}
